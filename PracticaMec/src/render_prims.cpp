@@ -2,6 +2,7 @@
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
+#include "myClasses.h"
 
 //Boolean variables allow to show/hide the primitives
 bool renderSphere = true;
