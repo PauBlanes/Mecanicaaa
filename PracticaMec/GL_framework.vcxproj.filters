@@ -42,12 +42,12 @@
     <ClCompile Include="src\render_prims.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="myClasses.cpp">
+    <ClCompile Include="src\myClasses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="myClasses.h">
+    <ClInclude Include="src\myClasses.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

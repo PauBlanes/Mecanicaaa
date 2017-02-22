@@ -3,7 +3,8 @@
 #include <glm\gtc\matrix_transform.hpp>
 #include <cstdio>
 #include "myClasses.h"
-
+#include <iostream>
+#include <vector>
 //Boolean variables allow to show/hide the primitives
 bool renderSphere = true;
 bool renderCapsule = true;
@@ -46,12 +47,18 @@ void setupPrims() {
 	//The access is contiguous from an start idx to idx+count particles. You may need to do multiple calls.
 	//Called here as an example to initialize to random values all particles inside the box. This code can be removed.
 	float *partVerts = new float[LilSpheres::maxParticles * 3];
-	for(int i = 0; i < LilSpheres::maxParticles; ++i) {
-		partVerts[i * 3 + 0] = ((float)rand() / RAND_MAX) * 10.f - 5.f;
-		partVerts[i * 3 + 1] = ((float)rand() / RAND_MAX) * 10.f;
-		partVerts[i * 3 + 2] = ((float)rand() / RAND_MAX) * 10.f - 5.f;
+	
+	for(int i = 0; i < 5; ++i) {
+		coords newPos = { ((float)rand() / RAND_MAX) * 10.f - 5.f ,((float)rand() / RAND_MAX) * 10.f,((float)rand() / RAND_MAX) * 10.f - 5.f };
+		coords newVel = { 5,0,5 };
+		Particle temp(euler, newPos, newVel, 5.0);
+		partVerts[i * 3 + 0] = temp.position.x;
+		partVerts[i * 3 + 1] = temp.position.y;
+		partVerts[i * 3 + 2] = temp.position.z;
+		particles.push_back(temp);
+		
 	}
-	LilSpheres::updateParticles(0, LilSpheres::maxParticles, partVerts);
+	LilSpheres::updateParticles(0, 5, partVerts);
 	delete[] partVerts;
 	//
 }

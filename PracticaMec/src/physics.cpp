@@ -1,5 +1,8 @@
 #include <imgui\imgui.h>
 #include <imgui\imgui_impl_glfw_gl3.h>
+#include "myClasses.h"
+#include <iostream>
+#include <vector>
 
 bool show_test_window = false;
 void GUI() {
@@ -20,7 +23,9 @@ void PhysicsInit() {
 	//TODO
 }
 void PhysicsUpdate(float dt) {
-	//TODO
+	for (auto it : ) {
+		
+	}
 }
 void PhysicsCleanup() {
 	//TODO
