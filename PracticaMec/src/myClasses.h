@@ -1,10 +1,14 @@
 #pragma once
 #define gravity -9.81;
+#include <vector>
+#include <iostream>
+#include "Includes.h"
+
 
 enum solverMethod { euler, verlet };
 struct coords { float x;float y;float z; };
 
-std::vector<Particle> particles;
+
 
 class Particle {
 	
@@ -25,4 +29,13 @@ public:
 	Particle(solverMethod solvM, coords pos, coords vel, float laMassa);
 	void Move(float dt);
 	void DetectWall();
+};
+
+
+class particleManager {
+	std::vector<Particle> particles;
+	
+public:
+	void AddPart(Particle temp);
+	void Update(float dt);
 };

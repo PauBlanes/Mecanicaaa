@@ -5,6 +5,8 @@
 #include <vector>
 
 bool show_test_window = false;
+particleManager pM;
+
 void GUI() {
 	{	//FrameRate
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -23,9 +25,7 @@ void PhysicsInit() {
 	//TODO
 }
 void PhysicsUpdate(float dt) {
-	for (auto it : ) {
-		
-	}
+	pM.Update(dt);
 }
 void PhysicsCleanup() {
 	//TODO

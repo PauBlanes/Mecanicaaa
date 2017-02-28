@@ -50,5 +50,8 @@
     <ClInclude Include="src\myClasses.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Includes.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
