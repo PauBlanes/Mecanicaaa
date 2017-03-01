@@ -32,10 +32,9 @@ public:
 };
 
 
-class particleManager {
-	std::vector<Particle> particles;
-	
+class particleManager {	
 public:
+	std::vector<Particle> particles;
 	void AddPart(Particle temp);
 	void Update(float dt);
 };

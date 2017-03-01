@@ -31,6 +31,7 @@ void Particle::Move(float dt) {
 	}
 }
 void Particle::DetectWall() {
+
 }
 
 void particleManager::Update(float dt) {
