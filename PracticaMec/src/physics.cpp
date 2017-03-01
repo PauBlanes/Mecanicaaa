@@ -12,7 +12,7 @@ void GUI() {
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 		//TODO
-		//hola!!!!!!!!!!!
+		
 	}
 
 	// ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()

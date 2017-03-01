@@ -30,8 +30,10 @@ void Particle::Move(float dt) {
 		oldPos = position;
 	}
 }
-void Particle::DetectWall() {
-
+void Particle::DetectWall(coords n, int d) {
+	if (n.x*position.x + n.y*position.y + n.z*position.z + d == 0) {
+		//colisionaaaaaaaaaaaaant wololooooooooooooo
+	}
 }
 
 void particleManager::Update(float dt) {

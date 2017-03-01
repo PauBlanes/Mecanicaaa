@@ -28,7 +28,7 @@ public:
 	coords position;
 	Particle(solverMethod solvM, coords pos, coords vel, float laMassa);
 	void Move(float dt);
-	void DetectWall();
+	void DetectWall(coords n, int d);
 };
 
 
