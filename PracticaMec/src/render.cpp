@@ -710,7 +710,7 @@ void drawParticles(int startIdx, int count) {
 	glUniformMatrix4fv(glGetUniformLocation(Sphere::sphereProgram, "mvpMat"), 1, GL_FALSE, glm::value_ptr(_MVP));
 	glUniformMatrix4fv(glGetUniformLocation(Sphere::sphereProgram, "mv_Mat"), 1, GL_FALSE, glm::value_ptr(_modelView));
 	glUniformMatrix4fv(glGetUniformLocation(Sphere::sphereProgram, "projMat"), 1, GL_FALSE, glm::value_ptr(_projection));
-	glUniform4f(glGetUniformLocation(Sphere::sphereProgram, "color"), 0.1f, 0.1f, 0.6f, 1.f);
+	glUniform4f(glGetUniformLocation(Sphere::sphereProgram, "color"), 1.f, 0.f, 0.f, 1.f);
 	glUniform1f(glGetUniformLocation(Sphere::sphereProgram, "radius"), LilSpheres::radius);
 	glDrawArrays(GL_POINTS, startIdx, count);
 

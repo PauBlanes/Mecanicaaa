@@ -47,9 +47,10 @@ void setupPrims() {
 	//Called here as an example to initialize to random values all particles inside the box. This code can be removed.
 	
 	
-	for(int i = 0; i < 5; ++i) {
-		coords newPos = { ((float)rand() / RAND_MAX) * 10.f - 5.f ,((float)rand() / RAND_MAX) * 10.f,((float)rand() / RAND_MAX) * 10.f - 5.f };
-		coords newVel = { 5,0,0 };
+		
+	for(int i = 0; i < 10; ++i) {
+		coords newPos = { ((float)rand() / RAND_MAX)* 10.f-5.f,10,((float)rand() / RAND_MAX) * 10.f - 5.f };
+		coords newVel = { 2,0,0 };
 		Particle temp(euler, newPos, newVel, 1.0);
 		partVerts[i * 3 + 0] = temp.position.x;
 		partVerts[i * 3 + 1] = temp.position.y;
@@ -58,7 +59,7 @@ void setupPrims() {
 		pM.AddPart(temp);
 		
 	}
-	LilSpheres::updateParticles(0, 5, partVerts);
+	LilSpheres::updateParticles(0, pM.particles.size(), partVerts);
 	//delete[] LilSpheres::partVerts;
 	//
 }
@@ -69,10 +70,10 @@ void cleanupPrims() {
 }
 
 void renderPrims() {
-	if(renderSphere)
-		Sphere::drawSphere();
-	if(renderCapsule)
-		Capsule::drawCapsule();
+	//if(renderSphere)
+		//Sphere::drawSphere();
+	//if(renderCapsule)
+		//Capsule::drawCapsule();
 
 	//TODO drawParticles can only draw a contiguous amount of particles in its array from start idx to idx+count
 	//Depending the alive particles that have to be rendered, you may need to do multiple calls for this function

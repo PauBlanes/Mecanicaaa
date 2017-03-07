@@ -14,9 +14,9 @@ void GUI() {
 		static bool Play_simulation = false;
 		ImGui::Checkbox("Play simulation", &Play_simulation);
 		//for resert
-		static bool Resert = false;
-		if (ImGui::Button("Resert simulation")) {
-			Resert ^= 1;
+		static bool Reset = false;
+		if (ImGui::Button("Reset simulation")) {
+			Reset ^= 1; //pq ^=??
 			//reiniciar todo los datos
 		}
 		//Emitter
@@ -107,9 +107,27 @@ void GUI() {
 }
 
 void PhysicsInit() {
-	//TODO
+	pM.wallNormals[0] = { 0,1,0 };
+	pM.wallNormals[1] = { 0,-1,0 };
+	pM.wallNormals[2] = { 1,0,0 };
+	pM.wallNormals[3] = { -1,0,0 };
+	pM.wallNormals[4] = { 0,0,1 };
+	pM.wallNormals[5] = { 0,0,-1 };
+	pM.wallDs[0] = 0;
+	pM.wallDs[0] = 10;
+	pM.wallDs[0] = 5;
+	pM.wallDs[0] = -5;
+	pM.wallDs[0] = 5;
+	pM.wallDs[0] = -5;
 }
-void PhysicsUpdate(float dt) {
+void PhysicsUpdate(float dt) {	
+	for (int i = 0; i < pM.particles.size();i++) {
+		
+		for (int j = 0; j < 6;j++) {
+			//pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j]);
+		}
+		
+	}
 	pM.Update(dt);
 }
 void PhysicsCleanup() {
