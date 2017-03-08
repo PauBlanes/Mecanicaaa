@@ -85,21 +85,21 @@ void Particle::DetectWall(coords n, int d, float dt) {
 			std::cout << "colisio" << std::endl;
 
 			coords projectedPos;
-			projectedPos.x = position.x - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.x;
-			projectedPos.y = position.y - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.y;
-			projectedPos.z = position.z - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.z;
+			projectedPos.x = position.x - 2 * ((n.x*position.x + n.x*position.x + n.z*position.x) + d)*n.x;
+			projectedPos.y = position.y - 2 * ((n.y*position.y + n.y*position.y + n.z*position.y) + d)*n.y;
+			projectedPos.z = position.z - 2 * ((n.z*position.z + n.y*position.z + n.z*position.z) + d)*n.z;
 			coords projectedCreuada;
-			projectedCreuada.x = posCreuada.x - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.x;
-			projectedCreuada.y = posCreuada.y - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.y;
-			projectedCreuada.z = posCreuada.z - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.z;
+			projectedCreuada.x = posCreuada.x - 2 * ((n.x*posCreuada.x + n.y*posCreuada.x + n.z*posCreuada.x) + d)*n.x;
+			projectedCreuada.y = posCreuada.y - 2 * ((n.x*posCreuada.y + n.y*posCreuada.y + n.z*posCreuada.y) + d)*n.y;
+			projectedCreuada.z = posCreuada.z - 2 * ((n.x*posCreuada.z + n.y*posCreuada.z + n.z*posCreuada.z) + d)*n.z;
 			coords dirVector;
 			dirVector.x = projectedCreuada.x - projectedPos.x;
 			dirVector.y = projectedCreuada.y - projectedPos.y;
 			dirVector.z = projectedCreuada.z - projectedPos.z;
 			coords dirVectorN;
-			dirVectorN.x = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.x;
-			dirVectorN.y = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.y;
-			dirVectorN.z = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.z;
+			dirVectorN.x = (dirVector.x*n.x + dirVector.x*n.x + dirVector.z*n.x)*n.x;
+			dirVectorN.y = (dirVector.y*n.y + dirVector.y*n.y + dirVector.z*n.y)*n.y;
+			dirVectorN.z = (dirVector.z*n.z + dirVector.z*n.z + dirVector.z*n.z)*n.z;
 
 			//la nova pos
 			position.x = projectedPos.x + (1 - elasticCoef)*dirVectorN.x + frictionCoef* (dirVector.x - dirVectorN.x);
