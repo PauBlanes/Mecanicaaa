@@ -7,14 +7,16 @@
 bool show_test_window = false;
 particleManager pM;
 
+static bool Play_simulation = true;
+static bool Reset = false;
+coords newPos;
+coords newVel;
 void GUI() {
 	{	//FrameRate
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		//for play & stop
-		static bool Play_simulation = false;
 		ImGui::Checkbox("Play simulation", &Play_simulation);
 		//for resert
-		static bool Reset = false;
 		if (ImGui::Button("Reset simulation")) {
 			Reset ^= 1; //pq ^=??
 			//reiniciar todo los datos
@@ -107,6 +109,19 @@ void GUI() {
 }
 
 void PhysicsInit() {
+	for (int i = 0; i < 10; ++i) {
+		newPos = { ((float)rand() / RAND_MAX)* 10.f - 5.f,10,((float)rand() / RAND_MAX) * 10.f - 5.f };
+		newVel = { 2,0,0 };
+		Particle temp(euler, newPos, newVel, 1.0);
+		partVerts[i * 3 + 0] = temp.position.x;
+		partVerts[i * 3 + 1] = temp.position.y;
+		partVerts[i * 3 + 2] = temp.position.z;
+
+		pM.AddPart(temp);
+
+	}
+	LilSpheres::updateParticles(0, pM.particles.size(), partVerts);
+
 	pM.wallNormals[0] = { 0,1,0 };
 	pM.wallNormals[1] = { 0,-1,0 };
 	pM.wallNormals[2] = { 1,0,0 };
@@ -128,7 +143,13 @@ void PhysicsUpdate(float dt) {
 		}
 		
 	}
-	pM.Update(dt);
+	if (Play_simulation) {
+		pM.Update(dt);
+	}
+	if (Reset) {
+		PhysicsInit();
+	}
+	
 }
 void PhysicsCleanup() {
 	//TODO
