@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
 bool show_test_window = false;
 particleManager pM;
 
@@ -19,7 +18,7 @@ void GUI() {
 		ImGui::Checkbox("Play simulation", &Play_simulation);
 		//for resert
 		if (ImGui::Button("Reset simulation")) {
-			Reset = true; //pq ^=??
+			Reset ^= 1; //pq ^=??
 			//reiniciar todo los datos
 		}
 		//Emitter
@@ -130,19 +129,17 @@ void PhysicsInit() {
 	pM.wallNormals[4] = { 0,0,1 };
 	pM.wallNormals[5] = { 0,0,-1 };
 	pM.wallDs[0] = 0;
-	pM.wallDs[0] = 10;
-	pM.wallDs[0] = 5;
-	pM.wallDs[0] = -5;
-	pM.wallDs[0] = 5;
-	pM.wallDs[0] = -5;
-
-
+	pM.wallDs[1] = 10;
+	pM.wallDs[2] = -5;
+	pM.wallDs[3] = 5;
+	pM.wallDs[4] = -5;
+	pM.wallDs[5] = 5;
 }
 void PhysicsUpdate(float dt) {	
 	for (int i = 0; i < pM.particles.size();i++) {
 		
 		for (int j = 0; j < 6;j++) {
-			//pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j]);
+			pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 		}
 		
 	}
@@ -151,7 +148,6 @@ void PhysicsUpdate(float dt) {
 	}
 	if (Reset) {
 		PhysicsInit();
-		Reset == false;
 	}
 	
 }

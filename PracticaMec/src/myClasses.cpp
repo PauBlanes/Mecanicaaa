@@ -5,7 +5,9 @@
 Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa) {
 	sM = solvM;
 		
-	position = pos;
+	position.x = pos.x;
+	position.y = pos.y;
+	position.z = pos.z;
 	oldPos = { 0,0,0 };
 	velocity = vel;
 
@@ -35,17 +37,32 @@ void Particle::Move(float dt) {
 		oldPos = position;
 	}
 }
-void Particle::DetectWall(coords n, int d) {
+void Particle::DetectWall(coords n, int d, float dt) {
+	//calculem quina seria la seva seguent posicio
+	coords tempPos = {0,0,0};
+	if (sM == euler) {
+		tempPos.x = position.x + dt*velocity.x;
+		tempPos.y = position.y + dt*velocity.y;
+		tempPos.z = position.z + dt*velocity.z;
 
-	if (0.1 > n.x*position.x + n.y*position.y + n.z*position.z + d && -0.1 < n.x*position.x + n.y*position.y + n.z*position.z + d) {
-		
-		std::cout << "colisio" << std::endl;
-		float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.y*velocity.y); // v*n
-		velocity.x += -(1 + elasticCoef)*(n.x*VperN);
-		velocity.y += -(1 + elasticCoef)*(n.y*VperN);
-		velocity.z += -(1 + elasticCoef)*(n.z*VperN);
-		
+		//el rebot
+		if ((n.x*position.x + n.y*position.y + n.z*position.z + d) * (n.x*tempPos.x + n.y*tempPos.y + n.z*tempPos.z + d) <= 0) {
+			std::cout << "colisio" << std::endl;
+			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.y*velocity.y); // v*n
+			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
+			velocity.y += -(1 + elasticCoef)*(n.y*VperN);
+			velocity.z += -(1 + elasticCoef)*(n.z*VperN);
+		}
 	}
+	else {
+		tempPos.x = position.x + (position.x - oldPos.x);
+		tempPos.y += position.y + (position.y - oldPos.y) + (force / mass)*dt*dt;
+		tempPos.z += position.z + (position.z - oldPos.z);		
+	}
+	
+	
+
+	
 }
 
 
