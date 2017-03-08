@@ -11,6 +11,7 @@ namespace LilSpheres {
 }
 
 extern float *partVerts;
+void PhysicsInit();
 
 
 

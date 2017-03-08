@@ -46,20 +46,9 @@ void setupPrims() {
 	//The access is contiguous from an start idx to idx+count particles. You may need to do multiple calls.
 	//Called here as an example to initialize to random values all particles inside the box. This code can be removed.
 	
+	PhysicsInit();
+		
 	
-		
-	for(int i = 0; i < 10; ++i) {
-		coords newPos = { ((float)rand() / RAND_MAX)* 10.f-5.f,10,((float)rand() / RAND_MAX) * 10.f - 5.f };
-		coords newVel = { 2,0,0 };
-		Particle temp(euler, newPos, newVel, 1.0);
-		partVerts[i * 3 + 0] = temp.position.x;
-		partVerts[i * 3 + 1] = temp.position.y;
-		partVerts[i * 3 + 2] = temp.position.z;
-		
-		pM.AddPart(temp);
-		
-	}
-	LilSpheres::updateParticles(0, pM.particles.size(), partVerts);
 	//delete[] LilSpheres::partVerts;
 	//
 }
