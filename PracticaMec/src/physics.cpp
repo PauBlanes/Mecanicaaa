@@ -109,8 +109,8 @@ void GUI() {
 }
 
 void PhysicsInit() {
-	for (int i = 0; i < 10; ++i) {
-		newPos = { ((float)rand() / RAND_MAX)* 10.f - 5.f,10,((float)rand() / RAND_MAX) * 10.f - 5.f };
+	for (int i = 0; i < 1; ++i) {
+		newPos = { 0,5,0};
 		newVel = { 2,0,0 };
 		Particle temp(euler, newPos, newVel, 1.0);
 		partVerts[i * 3 + 0] = temp.position.x;
