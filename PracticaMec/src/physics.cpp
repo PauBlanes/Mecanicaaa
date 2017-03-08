@@ -114,17 +114,17 @@ void PhysicsInit() {
 	pM.wallNormals[4] = { 0,0,1 };
 	pM.wallNormals[5] = { 0,0,-1 };
 	pM.wallDs[0] = 0;
-	pM.wallDs[0] = 10;
-	pM.wallDs[0] = 5;
-	pM.wallDs[0] = -5;
-	pM.wallDs[0] = 5;
-	pM.wallDs[0] = -5;
+	pM.wallDs[1] = 10;
+	pM.wallDs[2] = -5;
+	pM.wallDs[3] = 5;
+	pM.wallDs[4] = -5;
+	pM.wallDs[5] = 5;
 }
 void PhysicsUpdate(float dt) {	
 	for (int i = 0; i < pM.particles.size();i++) {
 		
 		for (int j = 0; j < 6;j++) {
-			//pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j]);
+			pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 		}
 		
 	}

@@ -1,6 +1,6 @@
 #pragma once
-#define gravity -5;
-#define elasticC 0.2;
+#define gravity -9.8;
+#define elasticC 0.1;
 #include <vector>
 #include <iostream>
 #include "Includes.h"
@@ -29,7 +29,7 @@ public:
 	Particle(solverMethod solvM, coords pos, coords vel, float laMassa);
 	coords position;
 	void Move(float dt);
-	void DetectWall(coords n, int d);
+	void DetectWall(coords n, int d, float dt);
 };
 
 
