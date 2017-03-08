@@ -8,7 +8,12 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa) {
 	position.x = pos.x;
 	position.y = pos.y;
 	position.z = pos.z;
-	oldPos = { 0,0,0 };
+	actualPos.x = pos.x;
+	actualPos.y = pos.y;
+	actualPos.z = pos.z;
+	oldPos.x = position.x;
+	oldPos.y = position.y;
+	oldPos.z = position.z;
 	velocity = vel;
 
 	mass = laMassa;
@@ -17,6 +22,7 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa) {
 	force = mass*gravity;
 
 	elasticCoef = elasticC;
+	frictionCoef = friction;
 };
 void Particle::Move(float dt) {
 	if (sM == euler) {			
@@ -31,33 +37,76 @@ void Particle::Move(float dt) {
 		
 	}
 	else {
-		position.x += (position.x - oldPos.x);
-		position.y += (position.y - oldPos.y) + (force / mass)*dt*dt;
-		position.z += (position.z - oldPos.z);
-		oldPos = position;
+		position.x = actualPos.x + (actualPos.x - oldPos.x);
+		position.y = actualPos.y + (actualPos.y - oldPos.y) + (force / mass)*dt*dt;
+		position.z = actualPos.z + (actualPos.z - oldPos.z);
+		oldPos.x = actualPos.x;
+		oldPos.y = actualPos.y;
+		oldPos.z = actualPos.z;
+		actualPos.x = position.x;
+		actualPos.y = position.y;
+		actualPos.z = position.z;
 	}
 }
 void Particle::DetectWall(coords n, int d, float dt) {
 	//calculem quina seria la seva seguent posicio
-	coords tempPos = {0,0,0};
+	coords posCreuada = {0,0,0};
 	if (sM == euler) {
-		tempPos.x = position.x + dt*velocity.x;
-		tempPos.y = position.y + dt*velocity.y;
-		tempPos.z = position.z + dt*velocity.z;
+		posCreuada.x = position.x + dt*velocity.x;
+		posCreuada.y = position.y + dt*velocity.y;
+		posCreuada.z = position.z + dt*velocity.z;
 
 		//el rebot
-		if ((n.x*position.x + n.y*position.y + n.z*position.z + d) * (n.x*tempPos.x + n.y*tempPos.y + n.z*tempPos.z + d) <= 0) {
+		if ((n.x*position.x + n.y*position.y + n.z*position.z + d) * (n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z + d) <= 0) {
 			std::cout << "colisio" << std::endl;
 			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.y*velocity.y); // v*n
+			//elasticidad
 			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
 			velocity.y += -(1 + elasticCoef)*(n.y*VperN);
 			velocity.z += -(1 + elasticCoef)*(n.z*VperN);
+			//friccion
+			coords vN;
+			vN.x = VperN*n.x;
+			vN.y = VperN*n.y;
+			vN.z = VperN*n.z;			
+			velocity.x += -frictionCoef * (velocity.x - vN.x); //-u*vT
+			velocity.y += -frictionCoef * (velocity.y - vN.y);
+			velocity.z += -frictionCoef * (velocity.z - vN.z);
+
 		}
 	}
 	else {
-		tempPos.x = position.x + (position.x - oldPos.x);
-		tempPos.y += position.y + (position.y - oldPos.y) + (force / mass)*dt*dt;
-		tempPos.z += position.z + (position.z - oldPos.z);		
+		posCreuada.x = position.x + (position.x - oldPos.x);
+		posCreuada.y += position.y + (position.y - oldPos.y) + (force / mass)*dt*dt;
+		posCreuada.z += position.z + (position.z - oldPos.z);
+
+		//el rebot
+		if ((n.x*position.x + n.y*position.y + n.z*position.z + d) * (n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z + d) <= 0) {
+			std::cout << "colisio" << std::endl;
+
+			coords projectedPos;
+			projectedPos.x = position.x - 2 * ((n.x*position.x + n.x*position.x + n.z*position.x) + d)*n.x;
+			projectedPos.y = position.y - 2 * ((n.y*position.y + n.y*position.y + n.z*position.y) + d)*n.y;
+			projectedPos.z = position.z - 2 * ((n.z*position.z + n.y*position.z + n.z*position.z) + d)*n.z;
+			coords projectedCreuada;
+			projectedCreuada.x = posCreuada.x - 2 * ((n.x*posCreuada.x + n.y*posCreuada.x + n.z*posCreuada.x) + d)*n.x;
+			projectedCreuada.y = posCreuada.y - 2 * ((n.x*posCreuada.y + n.y*posCreuada.y + n.z*posCreuada.y) + d)*n.y;
+			projectedCreuada.z = posCreuada.z - 2 * ((n.x*posCreuada.z + n.y*posCreuada.z + n.z*posCreuada.z) + d)*n.z;
+			coords dirVector;
+			dirVector.x = projectedCreuada.x - projectedPos.x;
+			dirVector.y = projectedCreuada.y - projectedPos.y;
+			dirVector.z = projectedCreuada.z - projectedPos.z;
+			coords dirVectorN;
+			dirVectorN.x = (dirVector.x*n.x + dirVector.x*n.x + dirVector.z*n.x)*n.x;
+			dirVectorN.y = (dirVector.y*n.y + dirVector.y*n.y + dirVector.z*n.y)*n.y;
+			dirVectorN.z = (dirVector.z*n.z + dirVector.z*n.z + dirVector.z*n.z)*n.z;
+
+			//la nova pos
+			position.x = projectedPos.x + (1 - elasticCoef)*dirVectorN.x + frictionCoef* (dirVector.x - dirVectorN.x);
+			position.y = projectedPos.y + (1 - elasticCoef)*dirVectorN.y + frictionCoef* (dirVector.y - dirVectorN.y);
+			position.z = projectedPos.z + (1 - elasticCoef)*dirVectorN.z + frictionCoef* (dirVector.z - dirVectorN.z);
+			
+		}
 	}
 	
 	
