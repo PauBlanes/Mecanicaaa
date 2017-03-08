@@ -4,13 +4,18 @@
 #include <iostream>
 #include <vector>
 
+using namespace std;
 bool show_test_window = false;
 particleManager pM;
 
+float* partVerts = new float[LilSpheres::maxParticles * 3];
+
 static bool Play_simulation = true;
 static bool Reset = false;
-coords newPos;
-coords newVel;
+coords newPos;coords newVel;
+static float pos[3]={ newPos.x,newPos.y,newPos.z };
+static float dir[3] = { newVel.x,newVel.y,newVel.z };
+
 void GUI() {
 	{	//FrameRate
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -18,12 +23,12 @@ void GUI() {
 		ImGui::Checkbox("Play simulation", &Play_simulation);
 		//for resert
 		if (ImGui::Button("Reset simulation")) {
-			Reset ^= 1; //pq ^=??
-			//reiniciar todo los datos
+			Reset ^= 1; 
 		}
 		//Emitter
 		if (ImGui::CollapsingHeader("Emitter"))
 		{
+			//Emitter rate &
 			static int i1 = 1000, i2 = 5000;
 			ImGui::DragInt("Emitter rate", &i1, 1);
 			ImGui::DragInt("Particle life", &i2, 2);
@@ -32,12 +37,13 @@ void GUI() {
 			ImGui::RadioButton("Fountain", &Fout_Casca, 0); ImGui::SameLine();
 			ImGui::RadioButton("Cascade", &Fout_Casca, 1);
 			//position
-			static float pos[3] = { 0.0f,3.0f,0.0f };
-			static float dir[3] = { 0.0f,7.11f,0.2f };
+			
 			static float angle = 0.0f;
 			ImGui::InputFloat3("position", pos);
 			ImGui::InputFloat3("direction", dir);
 			ImGui::SliderAngle("angle", &angle);
+
+			newPos.x = pos[0]; newPos.y = pos[1]; newPos.z = pos[2];
 		}
 		//Integration
 		if (ImGui::CollapsingHeader("Integration"))
@@ -110,7 +116,7 @@ void GUI() {
 
 void PhysicsInit() {
 	for (int i = 0; i < 1; ++i) {
-		newPos = { 0,5,0};
+		newPos;
 		newVel = { 2,0,0 };
 		Particle temp(euler, newPos, newVel, 1.0);
 		partVerts[i * 3 + 0] = temp.position.x;
@@ -137,20 +143,25 @@ void PhysicsInit() {
 }
 void PhysicsUpdate(float dt) {	
 	for (int i = 0; i < pM.particles.size();i++) {
-		
 		for (int j = 0; j < 6;j++) {
 			pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 		}
-		
 	}
 	if (Play_simulation) {
 		pM.Update(dt);
 	}
+
 	if (Reset) {
+		for(int i = 0; i < pM.particles.size(); i++) {
+			pM.particles.clear();
+		}
+
 		PhysicsInit();
+		Reset = false;
+		Play_simulation = true;
 	}
 	
 }
 void PhysicsCleanup() {
-	//TODO
+
 }

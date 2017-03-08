@@ -25,7 +25,7 @@ extern void updateCapsule(glm::vec3 posA, glm::vec3 posB, float radius = 1.f);
 extern void drawCapsule();
 }
 
-float* partVerts = new float[LilSpheres::maxParticles * 3];
+//float* partVerts = new float[LilSpheres::maxParticles * 3];
 extern particleManager pM;
 
 
