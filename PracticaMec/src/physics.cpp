@@ -112,7 +112,7 @@ void PhysicsInit() {
 	for (int i = 0; i < 1; ++i) {
 		newPos = { 0,5,0};
 		newVel = { 2,0,0 };
-		Particle temp(euler, newPos, newVel, 1.0);
+		Particle temp(verlet, newPos, newVel, 1.0);
 		partVerts[i * 3 + 0] = temp.position.x;
 		partVerts[i * 3 + 1] = temp.position.y;
 		partVerts[i * 3 + 2] = temp.position.z;
@@ -120,8 +120,7 @@ void PhysicsInit() {
 		pM.AddPart(temp);
 
 	}
-	LilSpheres::updateParticles(0, pM.particles.size(), partVerts);
-
+	
 	pM.wallNormals[0] = { 0,1,0 };
 	pM.wallNormals[1] = { 0,-1,0 };
 	pM.wallNormals[2] = { 1,0,0 };
@@ -136,8 +135,7 @@ void PhysicsInit() {
 	pM.wallDs[5] = 5;
 }
 void PhysicsUpdate(float dt) {	
-	for (int i = 0; i < pM.particles.size();i++) {
-		
+	for (int i = 0; i < pM.particles.size();i++) {		
 		for (int j = 0; j < 6;j++) {
 			pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 		}
@@ -152,5 +150,5 @@ void PhysicsUpdate(float dt) {
 	
 }
 void PhysicsCleanup() {
-	//TODO
+	//fer els deletes
 }

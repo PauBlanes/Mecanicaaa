@@ -1,6 +1,7 @@
 #pragma once
 #define gravity -9.8;
 #define elasticC 0.1;
+#define friction 0.1;
 #include <vector>
 #include <iostream>
 #include "Includes.h"
@@ -13,6 +14,7 @@ struct coords { float x;float y;float z; };
 class Particle {
 	
 	coords oldPos;
+	coords actualPos;
 	coords velocity;
 
 	float mass;
@@ -41,3 +43,5 @@ public:
 	void AddPart(Particle temp);
 	void Update(float dt);
 };
+
+
