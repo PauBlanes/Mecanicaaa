@@ -13,8 +13,12 @@ float* partVerts = new float[LilSpheres::maxParticles * 3];
 static bool Play_simulation = true;
 static bool Reset = false;
 coords newPos;coords newVel;
+int second=0;	int milisecond = 0;
 static float pos[3]={ newPos.x,newPos.y,newPos.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
+static float angle = 0.0f;
+static float Rad = 2*3.1415926/360;
+static int Emitter; static int life = 5000;
 
 void GUI() {
 	{	//FrameRate
@@ -29,9 +33,9 @@ void GUI() {
 		if (ImGui::CollapsingHeader("Emitter"))
 		{
 			//Emitter rate &
-			static int i1 = 1000, i2 = 5000;
-			ImGui::DragInt("Emitter rate", &i1, 1);
-			ImGui::DragInt("Particle life", &i2, 2);
+			
+			ImGui::DragInt("Emitter rate", &Emitter, 1);
+			ImGui::DragInt("Particle life", &life, 2);
 			//Faountain/Cascade
 			static int Fout_Casca = 0;
 			ImGui::RadioButton("Fountain", &Fout_Casca, 0); ImGui::SameLine();
@@ -44,7 +48,10 @@ void GUI() {
 			ImGui::SliderAngle("angle", &angle);
 
 			newPos.x = pos[0]; newPos.y = pos[1]; newPos.z = pos[2];
-			newVel.x = dir[0]; newVel.y = dir[1]; newVel.z = dir[2];
+
+			
+			newVel.x = dir[0]*cos(angle*Rad); newVel.y = dir[1] * sin(angle*Rad); newVel.z = dir[2] * cos(angle*Rad);
+			
 		}
 		//Integration
 		if (ImGui::CollapsingHeader("Integration"))
@@ -116,6 +123,7 @@ void GUI() {
 }
 
 void PhysicsInit() {
+
 	for (int i = 0; i < 1; ++i) {
 		newPos;
 		newVel;
