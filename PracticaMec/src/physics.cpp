@@ -44,6 +44,7 @@ void GUI() {
 			ImGui::SliderAngle("angle", &angle);
 
 			newPos.x = pos[0]; newPos.y = pos[1]; newPos.z = pos[2];
+			newVel.x = dir[0]; newVel.y = dir[1]; newVel.z = dir[2];
 		}
 		//Integration
 		if (ImGui::CollapsingHeader("Integration"))
@@ -117,7 +118,7 @@ void GUI() {
 void PhysicsInit() {
 	for (int i = 0; i < 1; ++i) {
 		newPos;
-		newVel = { 2,0,0 };
+		newVel;
 		Particle temp(euler, newPos, newVel, 1.0);
 		partVerts[i * 3 + 0] = temp.position.x;
 		partVerts[i * 3 + 1] = temp.position.y;
