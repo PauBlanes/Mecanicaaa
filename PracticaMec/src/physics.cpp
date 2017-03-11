@@ -133,19 +133,6 @@ void GUI() {
 
 void PhysicsInit() {
 
-	for (int i = 0; i < EmissionRate; ++i) {
-		newPos;
-		newVel;
-		Particle temp(euler, newPos, newVel, 1.0);
-		partVerts[i * 3 + 0] = temp.position.x;
-		partVerts[i * 3 + 1] = temp.position.y;
-		partVerts[i * 3 + 2] = temp.position.z;
-
-		pM.AddPart(temp);
-
-	}
-	LilSpheres::updateParticles(0, pM.particles.size(), partVerts);
-
 	pM.wallNormals[0] = { 0,1,0 };
 	pM.wallNormals[1] = { 0,-1,0 };
 	pM.wallNormals[2] = { 1,0,0 };
@@ -165,7 +152,7 @@ void PhysicsUpdate(float dt) {
 	
 	
 	if (Play_simulation) {
-		//fer spawn
+		//actualitzar parametres del emissor
 		pM.emitterRate = EmissionRate;
 		pM.pos1.x = newPos.x;
 		pM.pos1.y = newPos.y;
@@ -173,6 +160,8 @@ void PhysicsUpdate(float dt) {
 		pM.dir.x = newVel.x;
 		pM.dir.y = newVel.y;
 		pM.dir.z = newVel.z;
+		pM.particleLife = life;
+		//fer spawn
 		pM.SpawnParticles();
 
 		//detectar murs

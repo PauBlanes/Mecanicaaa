@@ -118,6 +118,16 @@ void Particle::DetectWall(coords n, int d, float dt) {
 //MANAGER
 void particleManager::Update(float dt) {
 	
+	//anar buidant quan moren
+	if (!particles.empty()) {
+		lifeCounter += (1 / ImGui::GetIO().Framerate);
+		if (lifeCounter >= particleLife) {
+			lifeCounter = 0;
+			particles.erase(particles.begin());
+		}
+	}
+	
+	//actualitzar el array de vertexs
 	for (int i = 0; i < particles.size(); ++i) {
 		
 		particles[i].Move(dt);
@@ -126,7 +136,8 @@ void particleManager::Update(float dt) {
 		partVerts[i * 3 + 1] = particles[i].position.y;
 		partVerts[i * 3 + 2] = particles[i].position.z;		
 
-	}
+	}	
+
 	LilSpheres::updateParticles(0, particles.size(), partVerts);
 }
 void particleManager::AddPart(Particle temp) {
@@ -140,7 +151,7 @@ void particleManager::SpawnParticles() {
 		if (spawnCounter >= emitterRate) {
 			spawnCounter = 0;
 			std::cout << "SPAWN" << std::endl;
-			Particle temp(euler, pos1, iVelocity, 1.0);
+			Particle temp(euler, pos1, dir, 1.0);
 			particles.push_back(temp);
 			partVerts[(particles.size()-1) * 3 + 0] = temp.position.x;
 			partVerts[(particles.size() - 1) * 3 + 1] = temp.position.y;

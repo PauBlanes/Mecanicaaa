@@ -21,9 +21,7 @@ class Particle {
 	float force;
 
 	float elasticCoef;
-	float frictionCoef;
-
-	float particleLife;
+	float frictionCoef;	
 
 	solverMethod sM;
 public:
@@ -39,12 +37,13 @@ class particleManager {
 
 	float spawnCounter;
 	float waitTime;
-
+	float lifeCounter;
 public:
 	int emitterRate;
 	coords pos1; //posicio del emissor
 	coords dir; //vector de velocitat inicial de les particules
 	emiterType eType; //tipus d'emissor
+	float particleLife;
 
 	coords wallNormals[6];
 	int wallDs[6];
