@@ -1,6 +1,6 @@
 
 #include "myClasses.h"
-
+float gravity;
 
 Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC) {
 	sM = solvM;
@@ -25,6 +25,7 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, fl
 	frictionCoef = fC;
 };
 void Particle::Move(float dt) {
+	
 	if (sM == euler) {			
 		//noves posicions
 		position.x += dt*velocity.x;
@@ -34,6 +35,13 @@ void Particle::Move(float dt) {
 		//tant en la x com z la velocitat es manté igual pq l'acceleració només és la de la gravetat
 		velocity.y += dt*(force / mass);
 		
+		//anar actualitzant aixo per si canviem en mig de la simulacio que no surtin disparades
+		oldPos.x = actualPos.x;
+		oldPos.y = actualPos.y;
+		oldPos.z = actualPos.z;
+		actualPos.x = position.x;
+		actualPos.y = position.y;
+		actualPos.z = position.z;
 		
 	}
 	else {
@@ -47,6 +55,8 @@ void Particle::Move(float dt) {
 		actualPos.y = position.y;
 		actualPos.z = position.z;
 	}
+	
+	force = mass*gravity;
 }
 void Particle::DetectWall(coords n, int d, float dt) {
 	//calculem quina seria la seva seguent posicio

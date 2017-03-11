@@ -21,6 +21,8 @@ static float Rad = 2*3.1415926/360;
 static int EmissionRate; static int life;
 static int Euler_Verlet = 0;
 static float iela = 0.689f, ifri = 0.2f;
+static bool Gravity = true;
+static float GravityAccel[3] = { 0.0f,-9.81f,0.0f };
 
 void GUI() {
 	{	//FrameRate
@@ -102,10 +104,10 @@ void GUI() {
 		//Forces
 		if (ImGui::CollapsingHeader("Forces"))
 		{
-			static bool Gravity = true;
+			
 			ImGui::Checkbox("Use gravity", &Gravity);
 			if (Gravity) {
-				static float GravityAccel[3] = { 0.0f,-9.81f,0.0f };
+				
 				ImGui::InputFloat3("Gravity Accelation", GravityAccel);
 			}
 			//Use Force Field: Atraction,Repulsion.etc
@@ -166,6 +168,10 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = verlet;
 		pM.elasticCoef = iela;
 		pM.frictionCoef = ifri;
+		if (!Gravity)
+			gravity = 0;
+		else
+			gravity = GravityAccel[1];
 		//spawn
 		pM.SpawnParticles();
 

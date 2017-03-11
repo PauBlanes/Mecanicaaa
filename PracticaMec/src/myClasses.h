@@ -1,5 +1,6 @@
 #pragma once
-#define gravity -9.8;
+
+
 
 #include <vector>
 #include <iostream>
@@ -9,6 +10,7 @@
 enum solverMethod { euler, verlet };
 struct coords { float x;float y;float z; };
 enum emiterType {font, cascada};
+extern float gravity;
 
 class Particle {
 	friend class particleManager;
