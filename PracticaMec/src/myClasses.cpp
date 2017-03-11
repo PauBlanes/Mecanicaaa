@@ -146,10 +146,6 @@ void particleManager::Update(float dt) {
 
 	
 }
-void particleManager::AddPart(Particle temp) {
-	particles.push_back(temp);
-}
-
 void particleManager::SpawnParticles() {
 	
 	if (emitterRate > 0) {
@@ -157,6 +153,7 @@ void particleManager::SpawnParticles() {
 		if (spawnCounter >= emitterRate) {
 			spawnCounter = 0;
 			std::cout << "SPAWN" << std::endl;
+			//aqui depenent del eType pos fer dons calcular la posicio i direccio que li passes a temp d'una manera o altra pq ara mateix es la que li triem al hud
 			Particle temp(euler, pos1, dir, 1.0);
 			particles.push_back(temp);
 			partVerts[(particles.size()-1) * 3 + 0] = temp.position.x;

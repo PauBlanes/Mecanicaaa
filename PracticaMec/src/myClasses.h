@@ -48,7 +48,6 @@ public:
 	int wallDs[6];
 	std::vector<Particle> particles;
 	void SpawnParticles();
-	void AddPart(Particle temp);
 	void Update(float dt);
 	
 };

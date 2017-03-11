@@ -173,20 +173,7 @@ void PhysicsUpdate(float dt) {
 
 		//noure particules
 		pM.Update(dt);
-		/*
-		for (int i = 0; i < EmissionRate; i++)
-			{
-				newPos;
-				newVel;
-				Particle temp(euler, newPos, newVel, 1.0);
-				partVerts[i * 3 + 0] = temp.position.x;
-				partVerts[i * 3 + 1] = temp.position.y;
-				partVerts[i * 3 + 2] = temp.position.z;
-
-				pM.AddPart(temp);
-			}
-		}*/
-	
+			
 	}
 
 	if (Reset) {
