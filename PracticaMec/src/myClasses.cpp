@@ -108,10 +108,6 @@ void Particle::DetectWall(coords n, int d, float dt) {
 			
 		}
 	}
-	
-	
-
-	
 }
 
 
