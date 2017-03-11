@@ -133,7 +133,6 @@ void GUI() {
 
 
 void PhysicsInit() {
-
 	pM.wallNormals[0] = { 0,1,0 };
 	pM.wallNormals[1] = { 0,-1,0 };
 	pM.wallNormals[2] = { 1,0,0 };
@@ -172,7 +171,7 @@ void PhysicsUpdate(float dt) {
 			}
 		}
 
-		//noure particules
+		//moure particules
 		pM.Update(dt);
 			
 	}
