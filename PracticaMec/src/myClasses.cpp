@@ -118,6 +118,20 @@ void Particle::DetectWall(coords n, int d, float dt) {
 //MANAGER
 void particleManager::Update(float dt) {
 	
+	//anar buidant quan moren
+	if (!particles.empty()) {
+		lifeCounter += (1 / ImGui::GetIO().Framerate);
+		if (lifeCounter >= particleLife) {
+			lifeCounter = 0;
+			particles.erase(particles.begin());
+		}
+	}
+	else { //per quan resetegem deixar-ho tot net
+		lifeCounter = 0;
+		spawnCounter = 0;
+	}
+	
+	//actualitzar el array de vertexs
 	for (int i = 0; i < particles.size(); ++i) {
 		
 		particles[i].Move(dt);
@@ -126,11 +140,28 @@ void particleManager::Update(float dt) {
 		partVerts[i * 3 + 1] = particles[i].position.y;
 		partVerts[i * 3 + 2] = particles[i].position.z;		
 
-	}
+	}	
+
 	LilSpheres::updateParticles(0, particles.size(), partVerts);
+
+	
 }
-void particleManager::AddPart(Particle temp) {
-	particles.push_back(temp);
+void particleManager::SpawnParticles() {
+	
+	if (emitterRate > 0) {
+		spawnCounter += (1/ImGui::GetIO().Framerate);
+		if (spawnCounter >= emitterRate) {
+			spawnCounter = 0;
+			std::cout << "SPAWN" << std::endl;
+			//aqui depenent del eType pos fer dons calcular la posicio i direccio que li passes a temp d'una manera o altra pq ara mateix es la que li triem al hud
+			Particle temp(partsMethod, pos1, dir, 1.0);
+			particles.push_back(temp);
+			partVerts[(particles.size()-1) * 3 + 0] = temp.position.x;
+			partVerts[(particles.size() - 1) * 3 + 1] = temp.position.y;
+			partVerts[(particles.size() - 1) * 3 + 2] = temp.position.z;
+		}
+	
+	}
 }
 
 

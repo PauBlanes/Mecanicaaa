@@ -5,11 +5,11 @@
 #include <vector>
 #include <iostream>
 #include "Includes.h"
-
+#include "imgui\imgui.h"
 
 enum solverMethod { euler, verlet };
 struct coords { float x;float y;float z; };
-
+enum emiterType {font, cascada};
 
 class Particle {
 	
@@ -21,9 +21,7 @@ class Particle {
 	float force;
 
 	float elasticCoef;
-	float frictionCoef;
-
-	float particleLife;
+	float frictionCoef;	
 
 	solverMethod sM;
 public:
@@ -35,13 +33,24 @@ public:
 };
 
 
-class particleManager {	
+class particleManager {
+
+	float spawnCounter;
+	float lifeCounter;
 public:
+	int emitterRate;
+	coords pos1; //posicio del emissor
+	coords dir; //vector de velocitat inicial de les particules
+	emiterType eType; //tipus d'emissor
+	float particleLife;
+	solverMethod partsMethod;
+
 	coords wallNormals[6];
 	int wallDs[6];
 	std::vector<Particle> particles;
-	void AddPart(Particle temp);
+	void SpawnParticles();
 	void Update(float dt);
+	
 };
 
 

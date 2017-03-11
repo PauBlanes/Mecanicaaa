@@ -18,7 +18,8 @@ static float pos[3]={ newPos.x,newPos.y,newPos.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
 static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
- static int Emitter; static int life;
+static int EmissionRate; static int life;
+static int Euler_Verlet = 0;
 
 void GUI() {
 	{	//FrameRate
@@ -40,7 +41,7 @@ void GUI() {
 		{
 			//Emitter rate & Particle life
 			
-			ImGui::DragInt("Emitter rate", &Emitter, 1);
+			ImGui::DragInt("Emitter rate", &EmissionRate, 1);
 			ImGui::DragInt("Particle life", &life, 2);
 			//Faountain/Cascade
 			static int Fout_Casca = 0;
@@ -62,7 +63,7 @@ void GUI() {
 		//Integration
 		if (ImGui::CollapsingHeader("Integration"))
 		{
-			static int Euler_Verlet = 0;
+			
 			ImGui::RadioButton("Euler", &Euler_Verlet, 0);
 			ImGui::RadioButton("Verlet", &Euler_Verlet, 1);
 		}
@@ -133,19 +134,6 @@ void GUI() {
 
 void PhysicsInit() {
 
-	for (int i = 0; i < Emitter; ++i) {
-		newPos;
-		newVel;
-		Particle temp(euler, newPos, newVel, 1.0);
-		partVerts[i * 3 + 0] = temp.position.x;
-		partVerts[i * 3 + 1] = temp.position.y;
-		partVerts[i * 3 + 2] = temp.position.z;
-
-		pM.AddPart(temp);
-
-	}
-	LilSpheres::updateParticles(0, pM.particles.size(), partVerts);
-
 	pM.wallNormals[0] = { 0,1,0 };
 	pM.wallNormals[1] = { 0,-1,0 };
 	pM.wallNormals[2] = { 1,0,0 };
@@ -161,28 +149,36 @@ void PhysicsInit() {
 }
 void PhysicsUpdate(float dt) {	
 	
-	for (int i = 0; i < pM.particles.size();i++) {
-		for (int j = 0; j < 6;j++) {
-			pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
-		}
-	}
+	
+	
+	
 	if (Play_simulation) {
-		pM.Update(dt);
-		if (second <= 1) {
-			second += 1000 / ImGui::GetIO().Framerate / 1000;
-			for (int i = 0; i < Emitter; i++)
-			{
-				newPos;
-				newVel;
-				Particle temp(euler, newPos, newVel, 1.0);
-				partVerts[i * 3 + 0] = temp.position.x;
-				partVerts[i * 3 + 1] = temp.position.y;
-				partVerts[i * 3 + 2] = temp.position.z;
+		//actualitzar parametres del emissor
+		pM.emitterRate = EmissionRate;
+		pM.pos1.x = newPos.x;
+		pM.pos1.y = newPos.y;
+		pM.pos1.z = newPos.z;
+		pM.dir.x = newVel.x;
+		pM.dir.y = newVel.y;
+		pM.dir.z = newVel.z;
+		pM.particleLife = life;
+		if (Euler_Verlet == 0)
+			pM.partsMethod = euler;
+		else
+			pM.partsMethod = verlet;
+		//fer spawn
+		pM.SpawnParticles();
 
-				pM.AddPart(temp);
+		//detectar murs
+		for (int i = 0; i < pM.particles.size();i++) {
+			for (int j = 0; j < 6;j++) {
+				pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 			}
 		}
-		else				second = 0.0f;
+
+		//noure particules
+		pM.Update(dt);
+			
 	}
 
 	if (Reset) {
