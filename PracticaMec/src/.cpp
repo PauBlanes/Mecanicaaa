@@ -8,11 +8,9 @@
 #include "Includes.h"
 
 //Boolean variables allow to show/hide the primitives
-bool renderSphere = true;
-bool renderCapsule = true;
-bool renderParticles = true;
-
-
+extern bool renderSphere = true;
+extern bool renderCapsule = true;
+extern bool renderParticles = true;
 
 // float* partVerts = new float[LilSpheres::maxParticles * 3];
 extern particleManager pM;

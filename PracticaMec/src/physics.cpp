@@ -194,33 +194,33 @@ void PhysicsUpdate(float dt) {
 		//spawn
 		pM.SpawnParticles();
 		//detectar murs sphere
-		spherePosition.x = SpherePos[0];	spherePosition.y = SpherePos[1];	spherePosition.z = SpherePos[2];
-
-		for (int i = 0; i < pM.particles.size();i++) {
-			pM.particles[i].DetectSphere(spherePosition, SphereRad, dt);
-			for (int j = 0; j < 6;j++) {
-				pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
+		//esfera
+		if (SphereCollider) {
+			renderSphere = true;
+			spherePosition.x = SpherePos[0];	spherePosition.y = SpherePos[1];	spherePosition.z = SpherePos[2];
+			Sphere::updateSphere(glm::vec3(SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
+			for (int i = 0; i < pM.particles.size(); i++) {
+				pM.particles[i].DetectSphere(spherePosition, SphereRad, dt);
+				for (int j = 0; j < 6; j++) {
+					pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
+				}
 			}
 		}
-		//capsura
-		CapPositionA.x = CapPosA[0];	CapPositionA.y = CapPosA[1];	CapPositionA.z = CapPosA[2];
-		CapPositionB.x = CapPosB[0];	CapPositionB.y = CapPosB[1];	CapPositionB.z = CapPosB[2];
-
-		//moure particules
-		pM.Update(dt);
-
-		//esfera
-		if(SphereCollider){
-			renderSphere = true;
-			Sphere::updateSphere(glm::vec3 (SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
+		else {
+			renderSphere = false;
 		}
-		else renderSphere = false;
 		//capsure
-		if(CapCollider){
+		if (CapCollider) {
 			renderCapsule = true;
+			CapPositionA.x = CapPosA[0];	CapPositionA.y = CapPosA[1];	CapPositionA.z = CapPosA[2];
+			CapPositionB.x = CapPosB[0];	CapPositionB.y = CapPosB[1];	CapPositionB.z = CapPosB[2];
 			Capsule::updateCapsule(glm::vec3(CapPosA[0], CapPosA[1], CapPosA[2]), glm::vec3(CapPosB[0], CapPosB[1], CapPosB[2]), CapRad);
 		}
-		else renderCapsule = false;
+		else {
+			renderCapsule = false;
+		}
+		//moure particules
+		pM.Update(dt);
 	}
 	//cout << renderSphere << endl;
 	if (Reset) {
