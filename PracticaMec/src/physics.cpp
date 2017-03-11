@@ -20,7 +20,13 @@ static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
 static int EmissionRate; static int life;
 static int Euler_Verlet = 0;
-
+static float iela = 0.689f, ifri = 0.2f;
+static bool Gravity = true;
+static float GravityAccel[3] = { 0.0f,-9.81f,0.0f };
+//esfera
+static float SpherePos[3] = { 3.0f,1.0f,0.0f };
+static float SphereRad = 1.0f;
+coords spherePosition;
 void GUI() {
 	{	//FrameRate
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -41,7 +47,7 @@ void GUI() {
 		{
 			//Emitter rate & Particle life
 			
-			ImGui::DragInt("Emitter rate", &EmissionRate, 1);
+			ImGui::DragInt("Emitter rate", &EmissionRate, 1); //quantes particules per segon
 			ImGui::DragInt("Particle life", &life, 2);
 			//Faountain/Cascade
 			static int Fout_Casca = 0;
@@ -70,7 +76,7 @@ void GUI() {
 		//Elasticity & friction
 		if (ImGui::CollapsingHeader("Elasticity & friction"))
 		{
-			static float iela = 0.689f, ifri = 0.2f;
+			
 			ImGui::DragFloat("Elastic Coefficient", &iela, 0.001f);
 			ImGui::DragFloat("Friction Coefficient", &ifri, 0.001f);
 		}
@@ -80,8 +86,7 @@ void GUI() {
 			static bool SphereCollider = true;
 			ImGui::Checkbox("Use Sphere Collider", &SphereCollider);
 			//Sphere
-			static float SpherePos[3] = { 3.0f,1.0f,0.0f };
-			static float SphereRad = 1.0f;
+			
 			if (SphereCollider) {
 				ImGui::InputFloat3("Sphere Position", SpherePos);
 				ImGui::DragFloat("Sphere Radius", &SphereRad, 0.005f);
@@ -101,10 +106,10 @@ void GUI() {
 		//Forces
 		if (ImGui::CollapsingHeader("Forces"))
 		{
-			static bool Gravity = true;
+			
 			ImGui::Checkbox("Use gravity", &Gravity);
 			if (Gravity) {
-				static float GravityAccel[3] = { 0.0f,-9.81f,0.0f };
+				
 				ImGui::InputFloat3("Gravity Accelation", GravityAccel);
 			}
 			//Use Force Field: Atraction,Repulsion.etc
@@ -141,9 +146,9 @@ void PhysicsInit() {
 	pM.wallNormals[5] = { 0,0,-1 };
 	pM.wallDs[0] = 0;
 	pM.wallDs[1] = 10;
-	pM.wallDs[2] = -5;
+	pM.wallDs[2] = 5;
 	pM.wallDs[3] = 5;
-	pM.wallDs[4] = 5;
+	pM.wallDs[4] = -5;
 	pM.wallDs[5] = -5;
 }
 void PhysicsUpdate(float dt) {	
@@ -162,10 +167,22 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = euler;
 		else
 			pM.partsMethod = verlet;
+		pM.elasticCoef = iela;
+		pM.frictionCoef = ifri;
+		if (!Gravity)
+			gravity = 0;
+		else
+			gravity = GravityAccel[1];
+		//spawn
 		pM.SpawnParticles();
 
 		//detectar murs
+		spherePosition.x = SpherePos[0];
+		spherePosition.y = SpherePos[1];
+		spherePosition.z = SpherePos[2];
+
 		for (int i = 0; i < pM.particles.size();i++) {
+			pM.particles[i].DetectSphere(spherePosition, SphereRad, dt);
 			for (int j = 0; j < 6;j++) {
 				pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 			}
@@ -173,7 +190,9 @@ void PhysicsUpdate(float dt) {
 
 		//moure particules
 		pM.Update(dt);
-			
+
+		//esfera
+		Sphere::updateSphere(glm::vec3 (SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
 	}
 
 	if (Reset) {
@@ -188,5 +207,5 @@ void PhysicsUpdate(float dt) {
 	
 }
 void PhysicsCleanup() {
-
+	delete[] partVerts;
 }

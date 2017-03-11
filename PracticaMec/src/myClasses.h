@@ -1,7 +1,7 @@
 #pragma once
-#define gravity -9.8;
-#define elasticC 0.1;
-#define friction 0.1;
+
+
+
 #include <vector>
 #include <iostream>
 #include "Includes.h"
@@ -10,6 +10,7 @@
 enum solverMethod { euler, verlet };
 struct coords { float x;float y;float z; };
 enum emiterType {font, cascada};
+extern float gravity;
 
 class Particle {
 	friend class particleManager;
@@ -26,10 +27,11 @@ class Particle {
 	solverMethod sM;
 public:
 	
-	Particle(solverMethod solvM, coords pos, coords vel, float laMassa);
+	Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC);
 	coords position;
 	void Move(float dt);
 	void DetectWall(coords n, int d, float dt);
+	void DetectSphere(coords pos, float radius, float dt);
 };
 
 
@@ -44,6 +46,8 @@ public:
 	emiterType eType; //tipus d'emissor
 	float particleLife;
 	solverMethod partsMethod;
+	float elasticCoef;
+	float frictionCoef;
 
 	coords wallNormals[6];
 	int wallDs[6];
