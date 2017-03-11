@@ -45,10 +45,9 @@ void setupPrims() {
 	//updateParticles is the function you can use to update the position of the particles (directly from the physics code)
 	//The access is contiguous from an start idx to idx+count particles. You may need to do multiple calls.
 	//Called here as an example to initialize to random values all particles inside the box. This code can be removed.
-		
+	PhysicsInit();
 	
-	//delete[] LilSpheres::partVerts;
-	//
+	
 }
 void cleanupPrims() {
 	Sphere::cleanupSphere();

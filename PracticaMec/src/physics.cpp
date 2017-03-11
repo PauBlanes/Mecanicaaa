@@ -18,7 +18,7 @@ static float pos[3]={ newPos.x,newPos.y,newPos.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
 static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
- static int Emitter; static int life;
+ static int EmissionRate; static int life;
 
 void GUI() {
 	{	//FrameRate
@@ -40,7 +40,7 @@ void GUI() {
 		{
 			//Emitter rate & Particle life
 			
-			ImGui::DragInt("Emitter rate", &Emitter, 1);
+			ImGui::DragInt("Emitter rate", &EmissionRate, 1);
 			ImGui::DragInt("Particle life", &life, 2);
 			//Faountain/Cascade
 			static int Fout_Casca = 0;
@@ -133,7 +133,7 @@ void GUI() {
 
 void PhysicsInit() {
 
-	for (int i = 0; i < Emitter; ++i) {
+	for (int i = 0; i < EmissionRate; ++i) {
 		newPos;
 		newVel;
 		Particle temp(euler, newPos, newVel, 1.0);
@@ -161,16 +161,31 @@ void PhysicsInit() {
 }
 void PhysicsUpdate(float dt) {	
 	
-	for (int i = 0; i < pM.particles.size();i++) {
-		for (int j = 0; j < 6;j++) {
-			pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
-		}
-	}
+	
+	
+	
 	if (Play_simulation) {
+		//fer spawn
+		pM.emitterRate = EmissionRate;
+		pM.pos1.x = newPos.x;
+		pM.pos1.y = newPos.y;
+		pM.pos1.z = newPos.z;
+		pM.dir.x = newVel.x;
+		pM.dir.y = newVel.y;
+		pM.dir.z = newVel.z;
+		pM.SpawnParticles();
+
+		//detectar murs
+		for (int i = 0; i < pM.particles.size();i++) {
+			for (int j = 0; j < 6;j++) {
+				pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
+			}
+		}
+
+		//noure particules
 		pM.Update(dt);
-		if (second <= 1) {
-			second += 1000 / ImGui::GetIO().Framerate / 1000;
-			for (int i = 0; i < Emitter; i++)
+		/*
+		for (int i = 0; i < EmissionRate; i++)
 			{
 				newPos;
 				newVel;
@@ -181,8 +196,8 @@ void PhysicsUpdate(float dt) {
 
 				pM.AddPart(temp);
 			}
-		}
-		else				second = 0.0f;
+		}*/
+	
 	}
 
 	if (Reset) {

@@ -133,5 +133,22 @@ void particleManager::AddPart(Particle temp) {
 	particles.push_back(temp);
 }
 
+void particleManager::SpawnParticles() {
+	
+	if (emitterRate > 0) {
+		spawnCounter += (1/ImGui::GetIO().Framerate);
+		if (spawnCounter >= emitterRate) {
+			spawnCounter = 0;
+			std::cout << "SPAWN" << std::endl;
+			Particle temp(euler, pos1, iVelocity, 1.0);
+			particles.push_back(temp);
+			partVerts[(particles.size()-1) * 3 + 0] = temp.position.x;
+			partVerts[(particles.size() - 1) * 3 + 1] = temp.position.y;
+			partVerts[(particles.size() - 1) * 3 + 2] = temp.position.z;
+		}
+	
+	}
+}
+
 
 
