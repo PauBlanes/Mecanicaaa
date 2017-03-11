@@ -39,10 +39,10 @@
     <ClCompile Include="src\render.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render_prims.cpp">
+    <ClCompile Include="src\myClasses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\myClasses.cpp">
+    <ClCompile Include="src\.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

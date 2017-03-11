@@ -134,7 +134,7 @@ xcopy "$(ProjectDir)libs\glfw3.dll" "$(OutDir)" /y /d</Command>
     <ClCompile Include="src\myClasses.cpp" />
     <ClCompile Include="src\physics.cpp" />
     <ClCompile Include="src\render.cpp" />
-    <ClCompile Include="src\render_prims.cpp" />
+    <ClCompile Include="src\.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Includes.h" />

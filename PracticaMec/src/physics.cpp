@@ -1,4 +1,4 @@
-#include <imgui\imgui.h>
+﻿#include <imgui\imgui.h>
 #include <imgui\imgui_impl_glfw_gl3.h>
 #include "myClasses.h"
 #include <iostream>
@@ -21,13 +21,20 @@ static float Rad = 2*3.1415926/360;
 static int EmissionRate=1; static int life;
 static int Euler_Verlet = 0;
 static float iela = 0.689f, ifri = 0.2f;
+//gravetat
 static bool Gravity = true;
+static int Forces = 0;
 static float GravityAccel[3] = { 0.0f,-9.81f,0.0f };
+//força
+static bool Force_Field = true;
+static float F1; static float F2;
 //esfera
+static bool SphereCollider = true;
 static float SpherePos[3] = { 3.0f,1.0f,0.0f };
 static float SphereRad = 1.0f;
 coords spherePosition;
 //capsura
+static bool CapCollider = true;
 static float CapPosA[3] = { -3.0f,2.0f,-2.0f };
 static float CapPosB[3] = { -4.0f,2.0f,2.0f };
 static float CapRad = 1.0f;
@@ -89,7 +96,7 @@ void GUI() {
 		//Colliders
 		if (ImGui::CollapsingHeader("Colliders"))
 		{
-			static bool SphereCollider = true;
+			
 			ImGui::Checkbox("Use Sphere Collider", &SphereCollider);
 			//Sphere
 			
@@ -98,7 +105,6 @@ void GUI() {
 				ImGui::DragFloat("Sphere Radius", &SphereRad, 0.005f);
 			}
 			//Capsule
-			static bool CapCollider = true;
 			ImGui::Checkbox("Use Capsule Collider", &CapCollider);
 			
 			if (CapCollider) {
@@ -113,23 +119,18 @@ void GUI() {
 			
 			ImGui::Checkbox("Use gravity", &Gravity);
 			if (Gravity) {
-				
 				ImGui::InputFloat3("Gravity Accelation", GravityAccel);
 			}
 			//Use Force Field: Atraction,Repulsion.etc
-			static bool Force_Field = true;
+			
 			ImGui::Checkbox("Use Force Field", &Force_Field);
-
-			static int Forces = 0;
+			
 			if (Force_Field) {
 				ImGui::RadioButton("Atraction", &Forces, 0);
 				ImGui::RadioButton("Repulsion", &Forces, 1);
-				ImGui::RadioButton("Repulsor ", &Forces, 2);
 			}
 		}
-
 		//TODO
-
 	}
 
 	// ImGui test window. Most of the sample code is in ImGui::ShowTestWindow()
@@ -169,12 +170,27 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = verlet;
 		
 		pM.elasticCoef = iela;	pM.frictionCoef = ifri;
-		
-		if (!Gravity)
-			gravity = 0;
-		else
+
+		if (Gravity) {
 			gravity = GravityAccel[1];
-		cout << gravity << endl;
+		}
+		else{
+			gravity = 0;
+		}
+		//força
+		if (Force_Field) {
+			if (Forces == 0) {
+				F1;
+				F2;
+			}
+			else {
+				F1;
+				F2;
+			}
+		}
+
+
+
 		//spawn
 		pM.SpawnParticles();
 		//detectar murs sphere
@@ -190,21 +206,27 @@ void PhysicsUpdate(float dt) {
 		CapPositionA.x = CapPosA[0];	CapPositionA.y = CapPosA[1];	CapPositionA.z = CapPosA[2];
 		CapPositionB.x = CapPosB[0];	CapPositionB.y = CapPosB[1];	CapPositionB.z = CapPosB[2];
 
-
 		//moure particules
 		pM.Update(dt);
 
 		//esfera
-		Sphere::updateSphere(glm::vec3 (SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
+		if(SphereCollider){
+			renderSphere = true;
+			Sphere::updateSphere(glm::vec3 (SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
+		}
+		else renderSphere = false;
 		//capsure
-		Capsule::updateCapsule(glm::vec3(CapPosA[0], CapPosA[1], CapPosA[2]), glm::vec3(CapPosB[0], CapPosB[1], CapPosB[2]), CapRad);
+		if(CapCollider){
+			renderCapsule = true;
+			Capsule::updateCapsule(glm::vec3(CapPosA[0], CapPosA[1], CapPosA[2]), glm::vec3(CapPosB[0], CapPosB[1], CapPosB[2]), CapRad);
+		}
+		else renderCapsule = false;
 	}
-
+	//cout << renderSphere << endl;
 	if (Reset) {
 		for(int i = 0; i < pM.particles.size(); i++) {
 			pM.particles.clear(); //netejem l'array i com que el dels vertex nomes fem update tenint en compte el tamany d'aquest dons no tindrem problemes.
 		}
-
 		PhysicsInit();
 		Reset = false;
 		Play_simulation = true;

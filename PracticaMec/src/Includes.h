@@ -1,9 +1,15 @@
 #pragma once
 #include <GL\glew.h>
 #include <glm\gtc\type_ptr.hpp>
-#include <glm\gtc\matrix_transform.hpp>#include <GL\glew.h>
+#include <glm\gtc\matrix_transform.hpp>
+#include <GL\glew.h>
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\gtc\matrix_transform.hpp>
+
+//Boolean variables allow to show/hide the primitives
+extern bool renderSphere;
+extern bool renderCapsule;
+extern bool renderParticles;
 
 namespace LilSpheres {
 	extern const int maxParticles;
@@ -27,7 +33,7 @@ namespace Capsule {
 	extern void drawCapsule();
 }
 extern float *partVerts;
-void PhysicsInit();
+//void PhysicsInit();
 
 
 
