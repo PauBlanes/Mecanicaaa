@@ -165,6 +165,36 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 		float dist = sqrt((distVector.x*distVector.x) + (distVector.y*distVector.y) + (distVector.y*distVector.y));
 		if (dist < radius) {
 			std::cout << "CollShpere" << std::endl;
+			coords n = { distVector.x / dist, distVector.y / dist, distVector.z / dist };
+			coords p = { Pos.x + n.x*radius, Pos.y + n.y*radius ,Pos.z + n.z*radius };
+			float d = -(p.x*n.x + p.y*n.y + p.z*n.z);
+			
+			coords projectedPos;
+			projectedPos.x = position.x - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.x;
+			projectedPos.y = position.y - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.y;
+			projectedPos.z = position.z - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.z;
+
+			coords projectedCreuada;
+			projectedCreuada.x = posCreuada.x - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.x;
+			projectedCreuada.y = posCreuada.y - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.y;
+			projectedCreuada.z = posCreuada.z - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.z;
+
+			coords dirVector;
+			dirVector.x = projectedCreuada.x - projectedPos.x;
+			dirVector.y = projectedCreuada.y - projectedPos.y;
+			dirVector.z = projectedCreuada.z - projectedPos.z;
+
+			coords dirVectorN;
+			dirVectorN.x = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.x;
+			dirVectorN.y = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.y;
+			dirVectorN.z = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.z;
+
+			//la nova pos
+			position.x = projectedPos.x + (1 - elasticCoef)*dirVectorN.x + frictionCoef* (dirVector.x - dirVectorN.x);
+			position.y = projectedPos.y + (1 - elasticCoef)*dirVectorN.y + frictionCoef* (dirVector.y - dirVectorN.y);
+			position.z = projectedPos.z + (1 - elasticCoef)*dirVectorN.z + frictionCoef* (dirVector.z - dirVectorN.z);
+			actualPos = position;
+			oldPos = projectedPos;
 		}
 	}
 }
