@@ -13,12 +13,7 @@ bool renderCapsule = true;
 bool renderParticles = true;
 
 
-namespace Capsule {
-extern void setupCapsule(glm::vec3 posA = glm::vec3(-3.f, 2.f, -2.f), glm::vec3 posB = glm::vec3(-4.f, 2.f, 2.f), float radius = 1.f);
-extern void cleanupCapsule();
-extern void updateCapsule(glm::vec3 posA, glm::vec3 posB, float radius = 1.f);
-extern void drawCapsule();
-}
+
 
 //float* partVerts = new float[LilSpheres::maxParticles * 3];
 extern particleManager pM;
@@ -53,8 +48,8 @@ void cleanupPrims() {
 void renderPrims() {
 	if(renderSphere)
 		Sphere::drawSphere();
-	//if(renderCapsule)
-		//Capsule::drawCapsule();
+	if(renderCapsule)
+		Capsule::drawCapsule();
 
 	//TODO drawParticles can only draw a contiguous amount of particles in its array from start idx to idx+count
 	//Depending the alive particles that have to be rendered, you may need to do multiple calls for this function

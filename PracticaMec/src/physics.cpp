@@ -27,6 +27,12 @@ static float GravityAccel[3] = { 0.0f,-9.81f,0.0f };
 static float SpherePos[3] = { 3.0f,1.0f,0.0f };
 static float SphereRad = 1.0f;
 coords spherePosition;
+//capsura
+static float CapPosA[3] = { -3.0f,2.0f,-2.0f };
+static float CapPosB[3] = { -4.0f,2.0f,2.0f };
+static float CapRad = 1.0f;
+coords CapPositionA, CapPositionB;
+
 void GUI() {
 	{	//FrameRate
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
@@ -94,13 +100,11 @@ void GUI() {
 			//Capsule
 			static bool CapCollider = true;
 			ImGui::Checkbox("Use Capsule Collider", &CapCollider);
-			static float CapPosA[3] = { -3.0f,2.0f,-2.0f };
-			static float CapPosB[3] = { -4.0f,2.0f,2.0f };
-			static float CapRad = 1.0f;
+			
 			if (CapCollider) {
 				ImGui::InputFloat3("Capsule Pos A", CapPosA);
 				ImGui::InputFloat3("Capsule Pos B", CapPosB);
-				ImGui::DragFloat("Capsule Radius", &SphereRad, 0.005f);
+				ImGui::DragFloat("Capsule Radius", &CapRad, 0.005f);
 			}
 		}
 		//Forces
@@ -165,16 +169,16 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = verlet;
 		
 		pM.elasticCoef = iela;	pM.frictionCoef = ifri;
+		
 		if (!Gravity)
 			gravity = 0;
 		else
 			gravity = GravityAccel[1];
+		cout << gravity << endl;
 		//spawn
 		pM.SpawnParticles();
-		//detectar murs
-		spherePosition.x = SpherePos[0];
-		spherePosition.y = SpherePos[1];
-		spherePosition.z = SpherePos[2];
+		//detectar murs sphere
+		spherePosition.x = SpherePos[0];	spherePosition.y = SpherePos[1];	spherePosition.z = SpherePos[2];
 
 		for (int i = 0; i < pM.particles.size();i++) {
 			pM.particles[i].DetectSphere(spherePosition, SphereRad, dt);
@@ -182,6 +186,10 @@ void PhysicsUpdate(float dt) {
 				pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 			}
 		}
+		//capsura
+		CapPositionA.x = CapPosA[0];	CapPositionA.y = CapPosA[1];	CapPositionA.z = CapPosA[2];
+		CapPositionB.x = CapPosB[0];	CapPositionB.y = CapPosB[1];	CapPositionB.z = CapPosB[2];
+
 
 		//moure particules
 		pM.Update(dt);
@@ -189,7 +197,7 @@ void PhysicsUpdate(float dt) {
 		//esfera
 		Sphere::updateSphere(glm::vec3 (SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
 		//capsure
-
+		Capsule::updateCapsule(glm::vec3(CapPosA[0], CapPosA[1], CapPosA[2]), glm::vec3(CapPosB[0], CapPosB[1], CapPosB[2]), CapRad);
 	}
 
 	if (Reset) {
