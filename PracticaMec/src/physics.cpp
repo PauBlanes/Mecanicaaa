@@ -144,10 +144,11 @@ void PhysicsInit() {
 	pM.wallDs[1] = 10;
 	pM.wallDs[2] = -5;
 	pM.wallDs[3] = 5;
-	pM.wallDs[4] = -5;
-	pM.wallDs[5] = 5;
+	pM.wallDs[4] = 5;
+	pM.wallDs[5] = -5;
 }
 void PhysicsUpdate(float dt) {	
+	
 	if (Play_simulation) {
 		//actualitzar parametres del emissor
 		pM.emitterRate = EmissionRate;
@@ -162,7 +163,6 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = euler;
 		else
 			pM.partsMethod = verlet;
-		//fer spawn
 		pM.SpawnParticles();
 
 		//detectar murs
@@ -179,7 +179,7 @@ void PhysicsUpdate(float dt) {
 
 	if (Reset) {
 		for(int i = 0; i < pM.particles.size(); i++) {
-			pM.particles.clear();
+			pM.particles.clear(); //netejem l'array i com que el dels vertex nomes fem update tenint en compte el tamany d'aquest dons no tindrem problemes.
 		}
 
 		PhysicsInit();

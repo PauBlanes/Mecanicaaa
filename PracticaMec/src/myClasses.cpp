@@ -126,16 +126,12 @@ void particleManager::Update(float dt) {
 			particles.erase(particles.begin());
 		}
 	}
-	else { //per quan resetegem deixar-ho tot net
-		lifeCounter = 0;
-		spawnCounter = 0;
-	}
-	
+		
 	//actualitzar el array de vertexs
 	for (int i = 0; i < particles.size(); ++i) {
 		
 		particles[i].Move(dt);
-		
+		particles[i].sM = partsMethod;
 		partVerts[i * 3 + 0] = particles[i].position.x;
 		partVerts[i * 3 + 1] = particles[i].position.y;
 		partVerts[i * 3 + 2] = particles[i].position.z;		
@@ -150,6 +146,7 @@ void particleManager::SpawnParticles() {
 	
 	if (emitterRate > 0) {
 		spawnCounter += (1/ImGui::GetIO().Framerate);
+		std::cout << spawnCounter << std::endl;
 		if (spawnCounter >= emitterRate) {
 			spawnCounter = 0;
 			std::cout << "SPAWN" << std::endl;

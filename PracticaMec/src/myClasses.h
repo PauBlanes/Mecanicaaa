@@ -12,7 +12,7 @@ struct coords { float x;float y;float z; };
 enum emiterType {font, cascada};
 
 class Particle {
-	
+	friend class particleManager;
 	coords oldPos;
 	coords actualPos;
 	coords velocity;
