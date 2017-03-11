@@ -126,6 +126,10 @@ void particleManager::Update(float dt) {
 			particles.erase(particles.begin());
 		}
 	}
+	else { //per quan resetegem deixar-ho tot net
+		lifeCounter = 0;
+		spawnCounter = 0;
+	}
 	
 	//actualitzar el array de vertexs
 	for (int i = 0; i < particles.size(); ++i) {
@@ -139,6 +143,8 @@ void particleManager::Update(float dt) {
 	}	
 
 	LilSpheres::updateParticles(0, particles.size(), partVerts);
+
+	
 }
 void particleManager::AddPart(Particle temp) {
 	particles.push_back(temp);

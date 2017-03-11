@@ -36,7 +36,6 @@ public:
 class particleManager {
 
 	float spawnCounter;
-	float waitTime;
 	float lifeCounter;
 public:
 	int emitterRate;
