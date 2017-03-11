@@ -31,7 +31,7 @@ void Particle::Move(float dt) {
 		position.y += dt*velocity.y;
 		position.z += dt*velocity.z;
 		
-		//tant en la x com z la velocitat es manté igual pq l'acceleració només és la de la gravetat
+		//tant en la x com z la velocitat es mant?igual pq l'acceleraci?només és la de la gravetat
 		velocity.y += dt*(force / mass);
 		
 		
