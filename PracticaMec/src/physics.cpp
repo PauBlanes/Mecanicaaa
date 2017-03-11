@@ -13,26 +13,32 @@ float* partVerts = new float[LilSpheres::maxParticles * 3];
 static bool Play_simulation = true;
 static bool Reset = false;
 coords newPos;coords newVel;
-int second=0;	int milisecond = 0;
+static float second = 0;
 static float pos[3]={ newPos.x,newPos.y,newPos.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
 static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
-static int Emitter; static int life = 5000;
+ static int Emitter; static int life;
 
 void GUI() {
 	{	//FrameRate
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		
+//		if (second <= 1)	second += 1000 / ImGui::GetIO().Framerate / 1000;
+//		else				second = 0.0f;
+//		cout << second << endl;
+
 		//for play & stop
 		ImGui::Checkbox("Play simulation", &Play_simulation);
 		//for resert
 		if (ImGui::Button("Reset simulation")) {
 			Reset ^= 1; 
 		}
+		
 		//Emitter
 		if (ImGui::CollapsingHeader("Emitter"))
 		{
-			//Emitter rate &
+			//Emitter rate & Particle life
 			
 			ImGui::DragInt("Emitter rate", &Emitter, 1);
 			ImGui::DragInt("Particle life", &life, 2);
@@ -108,6 +114,7 @@ void GUI() {
 			if (Force_Field) {
 				ImGui::RadioButton("Atraction", &Forces, 0);
 				ImGui::RadioButton("Repulsion", &Forces, 1);
+				ImGui::RadioButton("Repulsor ", &Forces, 2);
 			}
 		}
 
@@ -122,9 +129,11 @@ void GUI() {
 	}
 }
 
+
+
 void PhysicsInit() {
 
-	for (int i = 0; i < 1; ++i) {
+	for (int i = 0; i < Emitter; ++i) {
 		newPos;
 		newVel;
 		Particle temp(euler, newPos, newVel, 1.0);
@@ -151,6 +160,7 @@ void PhysicsInit() {
 	pM.wallDs[5] = 5;
 }
 void PhysicsUpdate(float dt) {	
+	
 	for (int i = 0; i < pM.particles.size();i++) {
 		for (int j = 0; j < 6;j++) {
 			pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
@@ -158,6 +168,21 @@ void PhysicsUpdate(float dt) {
 	}
 	if (Play_simulation) {
 		pM.Update(dt);
+		if (second <= 1) {
+			second += 1000 / ImGui::GetIO().Framerate / 1000;
+			for (int i = 0; i < Emitter; i++)
+			{
+				newPos;
+				newVel;
+				Particle temp(euler, newPos, newVel, 1.0);
+				partVerts[i * 3 + 0] = temp.position.x;
+				partVerts[i * 3 + 1] = temp.position.y;
+				partVerts[i * 3 + 2] = temp.position.z;
+
+				pM.AddPart(temp);
+			}
+		}
+		else				second = 0.0f;
 	}
 
 	if (Reset) {
