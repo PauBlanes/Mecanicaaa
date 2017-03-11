@@ -31,6 +31,7 @@ public:
 	coords position;
 	void Move(float dt);
 	void DetectWall(coords n, int d, float dt);
+	void DetectSphere(coords pos, float radius, float dt);
 };
 
 

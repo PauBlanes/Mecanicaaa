@@ -124,13 +124,50 @@ void Particle::DetectWall(coords n, int d, float dt) {
 			actualPos = position;
 			oldPos = projectedPos;
 		}
-	}
-	
-	
-
-	
+	}	
 }
 
+void Particle::DetectSphere(coords Pos, float radius, float dt) {
+	//calculem quina seria la seva seguent posicio
+	coords posCreuada = {0,0,0};
+	//colisio per metode euler
+	if (sM == euler) {
+		posCreuada.x = position.x + dt*velocity.x;
+		posCreuada.y = position.y + dt*velocity.y;
+		posCreuada.z = position.z + dt*velocity.z;
+		coords distVector = { posCreuada.x - Pos.x, posCreuada.y - Pos.y, posCreuada.z - Pos.z };
+		float dist = sqrt((distVector.x*distVector.x)+ (distVector.y*distVector.y)+ (distVector.z*distVector.z));
+		if (dist < radius) {
+			std::cout << "CollShpere" << std::endl;
+			coords n = { distVector.x / dist, distVector.y / dist, distVector.z / dist };
+			std::cout << distVector.x << "," << distVector.y << "," << distVector.z << std::endl;
+			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
+																				  //elasticidad
+			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
+			velocity.y += -(1 + elasticCoef)*(n.y*VperN);
+			velocity.z += -(1 + elasticCoef)*(n.z*VperN);
+			//friccion
+			coords vN;
+			vN.x = VperN*n.x;
+			vN.y = VperN*n.y;
+			vN.z = VperN*n.z;
+			velocity.x += -frictionCoef * (velocity.x - vN.x); //-u*vT
+			velocity.y += -frictionCoef * (velocity.y - vN.y);
+			velocity.z += -frictionCoef * (velocity.z - vN.z);
+			
+		}
+	}
+	else {
+		posCreuada.x = position.x + (position.x - oldPos.x);
+		posCreuada.y += position.y + (position.y - oldPos.y) + (force / mass)*dt*dt;
+		posCreuada.z += position.z + (position.z - oldPos.z);
+		coords distVector = { posCreuada.x - Pos.x, posCreuada.y - Pos.y, posCreuada.y - Pos.y };
+		float dist = sqrt((distVector.x*distVector.x) + (distVector.y*distVector.y) + (distVector.y*distVector.y));
+		if (dist < radius) {
+			std::cout << "CollShpere" << std::endl;
+		}
+	}
+}
 
 //MANAGER
 void particleManager::Update(float dt) {
