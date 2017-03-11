@@ -43,6 +43,7 @@ public:
 	coords dir; //vector de velocitat inicial de les particules
 	emiterType eType; //tipus d'emissor
 	float particleLife;
+	solverMethod partsMethod;
 
 	coords wallNormals[6];
 	int wallDs[6];

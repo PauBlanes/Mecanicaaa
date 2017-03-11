@@ -18,7 +18,8 @@ static float pos[3]={ newPos.x,newPos.y,newPos.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
 static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
- static int EmissionRate; static int life;
+static int EmissionRate; static int life;
+static int Euler_Verlet = 0;
 
 void GUI() {
 	{	//FrameRate
@@ -62,7 +63,7 @@ void GUI() {
 		//Integration
 		if (ImGui::CollapsingHeader("Integration"))
 		{
-			static int Euler_Verlet = 0;
+			
 			ImGui::RadioButton("Euler", &Euler_Verlet, 0);
 			ImGui::RadioButton("Verlet", &Euler_Verlet, 1);
 		}
@@ -161,6 +162,10 @@ void PhysicsUpdate(float dt) {
 		pM.dir.y = newVel.y;
 		pM.dir.z = newVel.z;
 		pM.particleLife = life;
+		if (Euler_Verlet == 0)
+			pM.partsMethod = euler;
+		else
+			pM.partsMethod = verlet;
 		//fer spawn
 		pM.SpawnParticles();
 
