@@ -41,7 +41,7 @@ void GUI() {
 		{
 			//Emitter rate & Particle life
 			
-			ImGui::DragInt("Emitter rate", &EmissionRate, 1);
+			ImGui::DragInt("Emitter rate", &EmissionRate, 1); //quantes particules per segon
 			ImGui::DragInt("Particle life", &life, 2);
 			//Faountain/Cascade
 			static int Fout_Casca = 0;
@@ -142,9 +142,9 @@ void PhysicsInit() {
 	pM.wallNormals[5] = { 0,0,-1 };
 	pM.wallDs[0] = 0;
 	pM.wallDs[1] = 10;
-	pM.wallDs[2] = -5;
+	pM.wallDs[2] = 5;
 	pM.wallDs[3] = 5;
-	pM.wallDs[4] = 5;
+	pM.wallDs[4] = -5;
 	pM.wallDs[5] = -5;
 }
 void PhysicsUpdate(float dt) {	

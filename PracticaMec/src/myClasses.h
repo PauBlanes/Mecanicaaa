@@ -1,7 +1,7 @@
 #pragma once
 #define gravity -9.8;
-#define elasticC 0.1;
-#define friction 0.1;
+#define elasticC 0.5;
+#define friction 0.01;
 #include <vector>
 #include <iostream>
 #include "Includes.h"
