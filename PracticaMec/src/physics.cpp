@@ -148,10 +148,6 @@ void PhysicsInit() {
 	pM.wallDs[5] = 5;
 }
 void PhysicsUpdate(float dt) {	
-	
-	
-	
-	
 	if (Play_simulation) {
 		//actualitzar parametres del emissor
 		pM.emitterRate = EmissionRate;

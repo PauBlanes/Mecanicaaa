@@ -18,7 +18,7 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa) {
 
 	mass = laMassa;
 
-	//calculem la força
+	//calculem la forca
 	force = mass*gravity;
 
 	elasticCoef = elasticC;
@@ -31,7 +31,7 @@ void Particle::Move(float dt) {
 		position.y += dt*velocity.y;
 		position.z += dt*velocity.z;
 		
-		//tant en la x com z la velocitat es mant?igual pq l'acceleraci?només és la de la gravetat
+		//tant en la x com z la velocitat es mante igual pq l'acceleracio només és la de la gravetat
 		velocity.y += dt*(force / mass);
 		
 		
@@ -156,7 +156,7 @@ void particleManager::SpawnParticles() {
 			//aqui depenent del eType pos fer dons calcular la posicio i direccio que li passes a temp d'una manera o altra pq ara mateix es la que li triem al hud
 			Particle temp(partsMethod, pos1, dir, 1.0);
 			particles.push_back(temp);
-			partVerts[(particles.size()-1) * 3 + 0] = temp.position.x;
+			partVerts[(particles.size() - 1) * 3 + 0] = temp.position.x;
 			partVerts[(particles.size() - 1) * 3 + 1] = temp.position.y;
 			partVerts[(particles.size() - 1) * 3 + 2] = temp.position.z;
 		}
