@@ -1,5 +1,6 @@
 
 #include "myClasses.h"
+
 float gravity;
 
 Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC) {
@@ -18,7 +19,7 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, fl
 
 	mass = laMassa;
 
-	//calculem la força
+	//calculem la forca
 	force = mass*gravity;
 
 	elasticCoef = eC;
@@ -235,11 +236,13 @@ void particleManager::SpawnParticles() {
 		
 		if (spawnCounter >= (1/emitterRate)) {
 			spawnCounter = 0;
-			//std::cout << "SPAWN" << std::endl;
+			std::cout << "SPAWN" << std::endl;
 			//aqui depenent del eType pos fer dons calcular la posicio i direccio que li passes a temp d'una manera o altra pq ara mateix es la que li triem al hud
 			Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
+			
 			particles.push_back(temp);
-			partVerts[(particles.size()-1) * 3 + 0] = temp.position.x;
+
+			partVerts[(particles.size() - 1) * 3 + 0] = temp.position.x;
 			partVerts[(particles.size() - 1) * 3 + 1] = temp.position.y;
 			partVerts[(particles.size() - 1) * 3 + 2] = temp.position.z;
 		}

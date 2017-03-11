@@ -18,7 +18,7 @@ static float pos[3]={ newPos.x,newPos.y,newPos.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
 static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
-static int EmissionRate; static int life;
+static int EmissionRate=1; static int life;
 static int Euler_Verlet = 0;
 static float iela = 0.689f, ifri = 0.2f;
 static bool Gravity = true;
@@ -156,26 +156,21 @@ void PhysicsUpdate(float dt) {
 	if (Play_simulation) {
 		//actualitzar parametres del emissor
 		pM.emitterRate = EmissionRate;
-		pM.pos1.x = newPos.x;
-		pM.pos1.y = newPos.y;
-		pM.pos1.z = newPos.z;
-		pM.dir.x = newVel.x;
-		pM.dir.y = newVel.y;
-		pM.dir.z = newVel.z;
+		pM.pos1.x = newPos.x;	pM.pos1.y = newPos.y;	pM.pos1.z = newPos.z;
+		pM.dir.x = newVel.x;	pM.dir.y = newVel.y;	pM.dir.z = newVel.z;
 		pM.particleLife = life;
 		if (Euler_Verlet == 0)
 			pM.partsMethod = euler;
 		else
 			pM.partsMethod = verlet;
-		pM.elasticCoef = iela;
-		pM.frictionCoef = ifri;
+		
+		pM.elasticCoef = iela;	pM.frictionCoef = ifri;
 		if (!Gravity)
 			gravity = 0;
 		else
 			gravity = GravityAccel[1];
 		//spawn
 		pM.SpawnParticles();
-
 		//detectar murs
 		spherePosition.x = SpherePos[0];
 		spherePosition.y = SpherePos[1];
@@ -193,6 +188,8 @@ void PhysicsUpdate(float dt) {
 
 		//esfera
 		Sphere::updateSphere(glm::vec3 (SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
+		//capsure
+
 	}
 
 	if (Reset) {
