@@ -1,7 +1,6 @@
 #pragma once
 #define gravity -9.8;
-#define elasticC 0.5;
-#define friction 0.01;
+
 #include <vector>
 #include <iostream>
 #include "Includes.h"
@@ -26,7 +25,7 @@ class Particle {
 	solverMethod sM;
 public:
 	
-	Particle(solverMethod solvM, coords pos, coords vel, float laMassa);
+	Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC);
 	coords position;
 	void Move(float dt);
 	void DetectWall(coords n, int d, float dt);
@@ -44,6 +43,8 @@ public:
 	emiterType eType; //tipus d'emissor
 	float particleLife;
 	solverMethod partsMethod;
+	float elasticCoef;
+	float frictionCoef;
 
 	coords wallNormals[6];
 	int wallDs[6];

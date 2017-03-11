@@ -20,6 +20,7 @@ static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
 static int EmissionRate; static int life;
 static int Euler_Verlet = 0;
+static float iela = 0.689f, ifri = 0.2f;
 
 void GUI() {
 	{	//FrameRate
@@ -70,7 +71,7 @@ void GUI() {
 		//Elasticity & friction
 		if (ImGui::CollapsingHeader("Elasticity & friction"))
 		{
-			static float iela = 0.689f, ifri = 0.2f;
+			
 			ImGui::DragFloat("Elastic Coefficient", &iela, 0.001f);
 			ImGui::DragFloat("Friction Coefficient", &ifri, 0.001f);
 		}
@@ -163,6 +164,9 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = euler;
 		else
 			pM.partsMethod = verlet;
+		pM.elasticCoef = iela;
+		pM.frictionCoef = ifri;
+		//spawn
 		pM.SpawnParticles();
 
 		//detectar murs

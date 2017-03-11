@@ -2,7 +2,7 @@
 #include "myClasses.h"
 
 
-Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa) {
+Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC) {
 	sM = solvM;
 		
 	position.x = pos.x;
@@ -11,9 +11,9 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa) {
 	actualPos.x = pos.x;
 	actualPos.y = pos.y;
 	actualPos.z = pos.z;
-	oldPos.x = position.x;
-	oldPos.y = position.y;
-	oldPos.z = position.z;
+	oldPos.x = pos.x;
+	oldPos.y = pos.y;
+	oldPos.z = pos.z;
 	velocity = vel;
 
 	mass = laMassa;
@@ -21,8 +21,8 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa) {
 	//calculem la força
 	force = mass*gravity;
 
-	elasticCoef = elasticC;
-	frictionCoef = friction;
+	elasticCoef = eC;
+	frictionCoef = fC;
 };
 void Particle::Move(float dt) {
 	if (sM == euler) {			
@@ -51,6 +51,7 @@ void Particle::Move(float dt) {
 void Particle::DetectWall(coords n, int d, float dt) {
 	//calculem quina seria la seva seguent posicio
 	coords posCreuada = {0,0,0};
+	//colisio per metode euler
 	if (sM == euler) {
 		posCreuada.x = position.x + dt*velocity.x;
 		posCreuada.y = position.y + dt*velocity.y;
@@ -75,6 +76,7 @@ void Particle::DetectWall(coords n, int d, float dt) {
 
 		}
 	}
+	//colisio per verlet
 	else {
 		posCreuada.x = position.x + (position.x - oldPos.x);
 		posCreuada.y += position.y + (position.y - oldPos.y) + (force / mass)*dt*dt;
@@ -137,6 +139,8 @@ void particleManager::Update(float dt) {
 		
 		particles[i].Move(dt);
 		particles[i].sM = partsMethod;
+		particles[i].elasticCoef = elasticCoef;
+		particles[i].frictionCoef = frictionCoef;
 		partVerts[i * 3 + 0] = particles[i].position.x;
 		partVerts[i * 3 + 1] = particles[i].position.y;
 		partVerts[i * 3 + 2] = particles[i].position.z;		
@@ -156,7 +160,7 @@ void particleManager::SpawnParticles() {
 			spawnCounter = 0;
 			//std::cout << "SPAWN" << std::endl;
 			//aqui depenent del eType pos fer dons calcular la posicio i direccio que li passes a temp d'una manera o altra pq ara mateix es la que li triem al hud
-			Particle temp(partsMethod, pos1, dir, 1.0);
+			Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
 			particles.push_back(temp);
 			partVerts[(particles.size()-1) * 3 + 0] = temp.position.x;
 			partVerts[(particles.size() - 1) * 3 + 1] = temp.position.y;
