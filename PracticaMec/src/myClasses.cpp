@@ -220,12 +220,29 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 		float distPQ = sqrt((PQ.x*PQ.x)+ (PQ.y*PQ.y)+ (PQ.z*PQ.z));
 		if (distPQ < radius) {
 			if (distAQ < distAB) {
-				coords n = { PQ.x / distPQ, PQ.y / distPQ, PQ.z / distPQ };
-				float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
-																					  //elasticidad
-				velocity.x += -(1 + elasticCoef)*(n.x*VperN);
-				velocity.y += -(1 + elasticCoef)*(n.y*VperN);
-				velocity.z += -(1 + elasticCoef)*(n.z*VperN);
+				coords U = PQ;	float Uquadrat = (U.x*U.x)+(U.y*U.y)+(U.z*U.z);
+				coords projuV;
+				projuV.x = velocity.x - ((velocity.x*U.x / Uquadrat)*U.x);
+				projuV.y = velocity.y - ((velocity.y*U.y / Uquadrat)*U.y);
+				projuV.z = velocity.z - ((velocity.z*U.z / Uquadrat)*U.z);
+				float projuVquadrat = ((projuV.x*projuV.x) + (projuV.y*projuV.y) + (projuV.z*projuV.z));
+				coords projuV2;
+				projuV2.x = velocity.x - ((velocity.x*projuV.x/projuVquadrat)*projuV.x);
+				projuV2.y = velocity.y - ((velocity.y*projuV.y / projuVquadrat)*projuV.y);
+				projuV2.z = velocity.z - ((velocity.z*projuV.z / projuVquadrat)*projuV.z);
+
+				velocity.x = -projuV2.x + projuV.x;
+				velocity.y = -projuV2.y + projuV.y;
+				velocity.z = -projuV2.x + projuV.z;
+				
+				
+
+				float distVelocity=sqrt((velocity.x*velocity.x)+ (velocity.y*velocity.y) + (velocity.z*velocity.z));
+				coords n = {velocity.x/distVelocity,velocity.y / distVelocity, velocity.z / distVelocity};
+				float VperN = (n.x*velocity.x)+(n.y*velocity.y)+(n.z*velocity.z);
+				velocity.x += -(elasticCoef)*(velocity.x);
+				velocity.y += -(elasticCoef)*(velocity.y);
+				velocity.z += -(elasticCoef)*(velocity.z);
 				//friccion
 				coords vN;
 				vN.x = VperN*n.x;
