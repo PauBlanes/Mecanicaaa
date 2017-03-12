@@ -163,7 +163,7 @@ void PhysicsUpdate(float dt) {
 		pM.elasticCoef = iela;	pM.frictionCoef = ifri;
 		
 		//SPAWNS
-		//fount cascaada
+		//fount
 		if (Fout_Casca==0) {
 			
 			pM.SpawnParticles(font);
@@ -172,8 +172,9 @@ void PhysicsUpdate(float dt) {
 			//newVel.x = dir[0]*cos(angle*Rad); newVel.y = dir[1] * sin(angle*Rad); newVel.z = dir[2] * cos(angle*Rad);
 			//pM.pos1.y = newVel.y*
 		}
+		//cascada
 		else {
-			
+			//pM.SpawnParticles(cascada);
 		}
 
 		if (Gravity) {
