@@ -24,24 +24,28 @@ class Particle {
 	float elasticCoef;
 	float frictionCoef;	
 
+	float lifeCounter;
+
 	solverMethod sM;
 public:
-	
+	float particleLife;
 	Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC);
 	coords position;
 	void Move(float dt);
 	void DetectWall(coords n, int d, float dt);
 	void DetectSphere(coords pos, float radius, float dt);
+	bool Die();
 };
 
 
 class particleManager {
 
 	float spawnCounter;
-	float lifeCounter;
+	
 public:
 	int emitterRate;
 	coords pos1; //posicio del emissor
+	coords pos2; //posicio del emissor per cascada
 	coords dir; //vector de velocitat inicial de les particules
 	emiterType eType; //tipus d'emissor
 	float particleLife;
@@ -52,7 +56,7 @@ public:
 	coords wallNormals[6];
 	int wallDs[6];
 	std::vector<Particle> particles;
-	void SpawnParticles();
+	void SpawnParticles(emiterType spawnType);
 	void Update(float dt);
 	
 };

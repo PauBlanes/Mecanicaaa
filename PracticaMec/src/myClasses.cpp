@@ -18,6 +18,8 @@ Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, fl
 
 	elasticCoef = eC;
 	frictionCoef = fC;
+
+	lifeCounter = 0;
 };
 void Particle::Move(float dt) {
 	
@@ -64,7 +66,7 @@ void Particle::DetectWall(coords n, int d, float dt) {
 
 		//el rebot
 		if ((n.x*position.x + n.y*position.y + n.z*position.z + d) * (n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z + d) <= 0) {
-			std::cout << "colisio" << std::endl;
+			//std::cout << "colisio" << std::endl;
 			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
 			//elasticidad
 			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
@@ -133,7 +135,7 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 		coords distVector = { posCreuada.x - Pos.x, posCreuada.y - Pos.y, posCreuada.z - Pos.z };
 		float dist = sqrt((distVector.x*distVector.x)+ (distVector.y*distVector.y)+ (distVector.z*distVector.z));
 		if (dist < radius) {
-			std::cout << "CollShpere" << std::endl;
+			//std::cout << "CollShpere" << std::endl;
 			coords n = { distVector.x / dist, distVector.y / dist, distVector.z / dist };
 			std::cout << distVector.x << "," << distVector.y << "," << distVector.z << std::endl;
 			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
@@ -159,7 +161,7 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 		coords distVector = { posCreuada.x - Pos.x, posCreuada.y - Pos.y, posCreuada.y - Pos.y };
 		float dist = sqrt((distVector.x*distVector.x) + (distVector.y*distVector.y) + (distVector.y*distVector.y));
 		if (dist < radius) {
-			std::cout << "CollShpere" << std::endl;
+			//std::cout << "CollShpere" << std::endl;
 			coords n = { distVector.x / dist, distVector.y / dist, distVector.z / dist };
 			coords p = { Pos.x + n.x*radius, Pos.y + n.y*radius ,Pos.z + n.z*radius };
 			float d = -(p.x*n.x + p.y*n.y + p.z*n.z);
@@ -194,30 +196,41 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 	}
 }
 
+bool Particle::Die() {
+	
+	if (lifeCounter < particleLife) {
+		lifeCounter += (1 / ImGui::GetIO().Framerate);
+		return false;
+	}
+	else {
+		lifeCounter = 0;
+		return true;
+	}
+	
+}
+
 //MANAGER
 void particleManager::Update(float dt) {
 	
-	//anar buidant quan moren
-	if (!particles.empty()) {
-		lifeCounter += (1 / ImGui::GetIO().Framerate);
-		if (lifeCounter >= particleLife) {
-			lifeCounter = 0;
-			particles.erase(particles.begin());
-		}
-	}
-		
 	//actualitzar el array de vertexs
 	for (int i = 0; i < particles.size(); ++i) {
 		
 		particles[i].Move(dt);
 		particles[i].sM = partsMethod;
+		particles[i].particleLife = particleLife;
 
 		particles[i].elasticCoef = elasticCoef;
 		particles[i].frictionCoef = frictionCoef;
 
 		partVerts[i * 3 + 0] = particles[i].position.x;
 		partVerts[i * 3 + 1] = particles[i].position.y;
-		partVerts[i * 3 + 2] = particles[i].position.z;		
+		partVerts[i * 3 + 2] = particles[i].position.z;
+
+		if (particles[i].Die()) {
+			particles.erase(particles.begin());
+			std::cout << "mort" << std::endl;
+		}
+		
 
 	}	
 
@@ -225,16 +238,38 @@ void particleManager::Update(float dt) {
 
 	
 }
-void particleManager::SpawnParticles() {
+void particleManager::SpawnParticles(emiterType spawnType) {
 	if (emitterRate > 0) {
 		spawnCounter += (1 / ImGui::GetIO().Framerate);
 		if (spawnCounter >= (1 / emitterRate)) {
 
-			Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
-			partVerts[(particles.size()) * 3 + 0] = temp.position.x;
-			partVerts[(particles.size()) * 3 + 1] = temp.position.y;
-			partVerts[(particles.size()) * 3 + 2] = temp.position.z;
-			particles.push_back(temp);
+			if (spawnType == font) {
+				dir.x = -5 + rand() % 10;
+				dir.z = -5 + rand() % 10;
+				dir.y = -5 + rand() % 10;
+
+				Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
+				partVerts[(particles.size()) * 3 + 0] = temp.position.x;
+				partVerts[(particles.size()) * 3 + 1] = temp.position.y;
+				partVerts[(particles.size()) * 3 + 2] = temp.position.z;
+				particles.push_back(temp);
+			}
+			else {
+				coords finalPos;
+				finalPos.x = pos1.x + (((float)rand()) / (float)RAND_MAX) * (pos2.x - pos1.x);
+				std::cout << pos1.x << "," << pos2.x << std::endl;
+				finalPos.y = pos1.y + (((float)rand()) / (float)RAND_MAX) * (pos2.y - pos1.y);
+				finalPos.z = pos1.z + (((float)rand()) / (float)RAND_MAX) * (pos2.z - pos1.z);
+				std::cout << finalPos.x << "," << finalPos.y << "," << finalPos.z << std::endl;
+
+				Particle temp(partsMethod, finalPos, dir, 1.0, elasticCoef, frictionCoef);
+				partVerts[(particles.size()) * 3 + 0] = temp.position.x;
+				partVerts[(particles.size()) * 3 + 1] = temp.position.y;
+				partVerts[(particles.size()) * 3 + 2] = temp.position.z;
+				particles.push_back(temp);
+			}
+
+			
 			spawnCounter = 0;
 		}
 	}
