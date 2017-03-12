@@ -217,6 +217,14 @@ void PhysicsUpdate(float dt) {
 			renderCapsule = true;
 			CapPositionA.x = CapPosA[0];	CapPositionA.y = CapPosA[1];	CapPositionA.z = CapPosA[2];
 			CapPositionB.x = CapPosB[0];	CapPositionB.y = CapPosB[1];	CapPositionB.z = CapPosB[2];
+			//detecta 2 esfera de capsule
+			for (int i = 0; i < pM.particles.size(); i++) {
+				pM.particles[i].DetectSphere(CapPositionA, CapRad, dt);
+			}
+			for (int i = 0; i < pM.particles.size(); i++) {
+				pM.particles[i].DetectSphere(CapPositionB, CapRad, dt);
+			}
+
 			Capsule::updateCapsule(glm::vec3(CapPosA[0], CapPosA[1], CapPosA[2]), glm::vec3(CapPosB[0], CapPosB[1], CapPosB[2]), CapRad);
 		}
 		else {
