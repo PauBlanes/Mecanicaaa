@@ -13,9 +13,10 @@ int counter = 0;
 static bool Play_simulation = true;
 static bool Reset = false;
 //posicion, vel i angle
-coords newPos; coords newVel;
+coords newPos; coords newVel; coords newPos2;
 static float second = 0;
 static float pos[3]={ newPos.x,newPos.y,newPos.z };
+static float pos2[3] = { newPos2.x,newPos2.y,newPos2.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
 static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
@@ -65,10 +66,14 @@ void GUI() {
 			//position
 			
 			ImGui::InputFloat3("position", pos);
-			ImGui::InputFloat3("direction", dir);
+			if (Fout_Casca == 1) { //nomes si és casdada mostrem la segona posicio i la direccio
+				ImGui::InputFloat3("position2", pos2);
+				ImGui::InputFloat3("direction", dir);
+			}				
 			ImGui::SliderAngle("angle", &angle);
 
 			newPos.x = pos[0]; newPos.y = pos[1]; newPos.z = pos[2];
+			newPos2.x = pos2[0]; newPos2.y = pos2[1]; newPos2.z = pos2[2];
 		}
 		//Integration
 		if (ImGui::CollapsingHeader("Integration"))
@@ -152,8 +157,7 @@ void PhysicsUpdate(float dt) {
 	if (Play_simulation) {
 		//actualitzar parametres del emissor
 		pM.emitterRate = EmissionRate;
-		pM.pos1.x = newPos.x;	pM.pos1.y = newPos.y;	pM.pos1.z = newPos.z;
-		pM.dir.x = newVel.x;	pM.dir.y = newVel.y;	pM.dir.z = newVel.z;
+		pM.pos1.x = newPos.x;	pM.pos1.y = newPos.y;	pM.pos1.z = newPos.z;		
 		pM.particleLife = life;
 		if (Euler_Verlet == 0)
 			pM.partsMethod = euler;
@@ -164,8 +168,7 @@ void PhysicsUpdate(float dt) {
 		
 		//SPAWNS
 		//fount
-		if (Fout_Casca==0) {
-			
+		if (Fout_Casca==0) {			
 			pM.SpawnParticles(font);
 			//newVel.y = dir[0] * tan(angle*Rad);
 			//cout << newVel.y << endl;
@@ -174,7 +177,9 @@ void PhysicsUpdate(float dt) {
 		}
 		//cascada
 		else {
-			//pM.SpawnParticles(cascada);
+			pM.pos2.x = newPos2.x;	pM.pos2.y = newPos2.y;	pM.pos2.z = newPos2.z;
+			pM.dir.x = newVel.x;	pM.dir.y = newVel.y;	pM.dir.z = newVel.z;
+			pM.SpawnParticles(cascada);
 		}
 
 		if (Gravity) {

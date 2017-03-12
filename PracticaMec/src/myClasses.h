@@ -45,6 +45,7 @@ class particleManager {
 public:
 	int emitterRate;
 	coords pos1; //posicio del emissor
+	coords pos2; //posicio del emissor per cascada
 	coords dir; //vector de velocitat inicial de les particules
 	emiterType eType; //tipus d'emissor
 	float particleLife;
