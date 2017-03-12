@@ -225,10 +225,16 @@ void particleManager::Update(float dt) {
 
 	
 }
-void particleManager::SpawnParticles() {
+void particleManager::SpawnParticles(emiterType spawnType) {
 	if (emitterRate > 0) {
 		spawnCounter += (1 / ImGui::GetIO().Framerate);
 		if (spawnCounter >= (1 / emitterRate)) {
+
+			if (spawnType == font) {
+				dir.x = -5 + rand() % 10;
+				dir.z = -5 + rand() % 10;
+				dir.y = -5 + rand() % 10;
+			}
 
 			Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
 			partVerts[(particles.size()) * 3 + 0] = temp.position.x;

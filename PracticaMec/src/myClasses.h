@@ -52,7 +52,7 @@ public:
 	coords wallNormals[6];
 	int wallDs[6];
 	std::vector<Particle> particles;
-	void SpawnParticles();
+	void SpawnParticles(emiterType spawnType);
 	void Update(float dt);
 	
 };

@@ -161,16 +161,19 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = verlet;
 		
 		pM.elasticCoef = iela;	pM.frictionCoef = ifri;
+		
+		//SPAWNS
 		//fount cascaada
 		if (Fout_Casca==0) {
 			
-			newVel.x = -5+rand() % 10;
-			newVel.z = -5+rand() % 10;
-			newVel.y = -5 + rand() % 10;
+			pM.SpawnParticles(font);
 			//newVel.y = dir[0] * tan(angle*Rad);
-			cout << newVel.y << endl;
+			//cout << newVel.y << endl;
 			//newVel.x = dir[0]*cos(angle*Rad); newVel.y = dir[1] * sin(angle*Rad); newVel.z = dir[2] * cos(angle*Rad);
-	//		pM.pos1.y = newVel.y*
+			//pM.pos1.y = newVel.y*
+		}
+		else {
+			
 		}
 
 		if (Gravity) {
@@ -192,8 +195,7 @@ void PhysicsUpdate(float dt) {
 				F2;
 			}
 		}
-		//spawn
-		pM.SpawnParticles();
+		
 		//detectar murs sphere
 		for (int i = 0; i < pM.particles.size(); i++) {
 			for (int j = 0; j < 6; j++) {
