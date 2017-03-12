@@ -2,21 +2,15 @@
 #include "myClasses.h"
 
 float gravity;
-
+int NumPrticles = 0;
 Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC) {
 	sM = solvM;
 		
-	position.x = pos.x;
-	position.y = pos.y;
-	position.z = pos.z;
-	actualPos.x = pos.x;
-	actualPos.y = pos.y;
-	actualPos.z = pos.z;
-	oldPos.x = pos.x;
-	oldPos.y = pos.y;
-	oldPos.z = pos.z;
-	velocity = vel;
+	position.x = pos.x;		position.y = pos.y;		position.z = pos.z;
+	actualPos.x = pos.x;	actualPos.y = pos.y;	actualPos.z = pos.z;
+	oldPos.x = pos.x;		oldPos.y = pos.y;		oldPos.z = pos.z;
 
+	velocity = vel;
 	mass = laMassa;
 
 	//calculem la forca
@@ -217,8 +211,10 @@ void particleManager::Update(float dt) {
 		
 		particles[i].Move(dt);
 		particles[i].sM = partsMethod;
+
 		particles[i].elasticCoef = elasticCoef;
 		particles[i].frictionCoef = frictionCoef;
+
 		partVerts[i * 3 + 0] = particles[i].position.x;
 		partVerts[i * 3 + 1] = particles[i].position.y;
 		partVerts[i * 3 + 2] = particles[i].position.z;		
@@ -230,23 +226,17 @@ void particleManager::Update(float dt) {
 	
 }
 void particleManager::SpawnParticles() {
-	
 	if (emitterRate > 0) {
-		spawnCounter += (1/ImGui::GetIO().Framerate);
-		
-		if (spawnCounter >= (1/emitterRate)) {
-			spawnCounter = 0;
-			std::cout << "SPAWN" << std::endl;
-			//aqui depenent del eType pos fer dons calcular la posicio i direccio que li passes a temp d'una manera o altra pq ara mateix es la que li triem al hud
-			Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
-			
-			particles.push_back(temp);
+		spawnCounter += (1 / ImGui::GetIO().Framerate);
+		if (spawnCounter >= (1 / emitterRate)) {
 
-			partVerts[(particles.size() - 1) * 3 + 0] = temp.position.x;
-			partVerts[(particles.size() - 1) * 3 + 1] = temp.position.y;
-			partVerts[(particles.size() - 1) * 3 + 2] = temp.position.z;
+			Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
+			partVerts[(particles.size()) * 3 + 0] = temp.position.x;
+			partVerts[(particles.size()) * 3 + 1] = temp.position.y;
+			partVerts[(particles.size()) * 3 + 2] = temp.position.z;
+			particles.push_back(temp);
+			spawnCounter = 0;
 		}
-	
 	}
 }
 

@@ -12,7 +12,6 @@ extern bool renderSphere = true;
 extern bool renderCapsule = true;
 extern bool renderParticles = true;
 
-// float* partVerts = new float[LilSpheres::maxParticles * 3];
 extern particleManager pM;
 
 

@@ -9,18 +9,21 @@ bool show_test_window = false;
 particleManager pM;
 
 float* partVerts = new float[LilSpheres::maxParticles * 3];
-
+int counter = 0;
 static bool Play_simulation = true;
 static bool Reset = false;
-coords newPos;coords newVel;
+//posicion, vel i angle
+coords newPos; coords newVel;
 static float second = 0;
 static float pos[3]={ newPos.x,newPos.y,newPos.z };
 static float dir[3] = { newVel.x,newVel.y,newVel.z };
 static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
-static int EmissionRate=1; static int life;
+static int EmissionRate=1; static int life=2;
 static int Euler_Verlet = 0;
-static float iela = 0.689f, ifri = 0.2f;
+static float iela = 1.2, ifri = 0.1f;
+//font cascada
+static int Fout_Casca = 0;
 //gravetat
 static bool Gravity = true;
 static int Forces = 0;
@@ -43,41 +46,29 @@ coords CapPositionA, CapPositionB;
 void GUI() {
 	{	//FrameRate
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		
-//		if (second <= 1)	second += 1000 / ImGui::GetIO().Framerate / 1000;
-//		else				second = 0.0f;
-//		cout << second << endl;
-
 		//for play & stop
 		ImGui::Checkbox("Play simulation", &Play_simulation);
 		//for resert
 		if (ImGui::Button("Reset simulation")) {
 			Reset ^= 1; 
 		}
-		
 		//Emitter
 		if (ImGui::CollapsingHeader("Emitter"))
 		{
 			//Emitter rate & Particle life
-			
 			ImGui::DragInt("Emitter rate", &EmissionRate, 1); //quantes particules per segon
 			ImGui::DragInt("Particle life", &life, 2);
 			//Faountain/Cascade
-			static int Fout_Casca = 0;
+			
 			ImGui::RadioButton("Fountain", &Fout_Casca, 0); ImGui::SameLine();
 			ImGui::RadioButton("Cascade", &Fout_Casca, 1);
 			//position
 			
-			static float angle = 0.0f;
 			ImGui::InputFloat3("position", pos);
 			ImGui::InputFloat3("direction", dir);
 			ImGui::SliderAngle("angle", &angle);
 
 			newPos.x = pos[0]; newPos.y = pos[1]; newPos.z = pos[2];
-
-			
-			newVel.x = dir[0]*cos(angle*Rad); newVel.y = dir[1] * sin(angle*Rad); newVel.z = dir[2] * cos(angle*Rad);
-			
 		}
 		//Integration
 		if (ImGui::CollapsingHeader("Integration"))
@@ -140,7 +131,7 @@ void GUI() {
 	}
 }
 
-
+int ini = 0;
 
 void PhysicsInit() {
 	pM.wallNormals[0] = { 0,1,0 };
@@ -170,6 +161,17 @@ void PhysicsUpdate(float dt) {
 			pM.partsMethod = verlet;
 		
 		pM.elasticCoef = iela;	pM.frictionCoef = ifri;
+		//fount cascaada
+		if (Fout_Casca==0) {
+			
+			newVel.x = -5+rand() % 10;
+			newVel.z = -5+rand() % 10;
+			newVel.z = -5 + rand() % 10;
+			//newVel.y = dir[0] * tan(angle*Rad);
+			cout << newVel.y << endl;
+			//newVel.x = dir[0]*cos(angle*Rad); newVel.y = dir[1] * sin(angle*Rad); newVel.z = dir[2] * cos(angle*Rad);
+	//		pM.pos1.y = newVel.y*
+		}
 
 		if (Gravity) {
 			gravity = GravityAccel[1];
@@ -180,20 +182,24 @@ void PhysicsUpdate(float dt) {
 		//força
 		if (Force_Field) {
 			if (Forces == 0) {
+				//attraccion
 				F1;
 				F2;
 			}
 			else {
+				//repulsion
 				F1;
 				F2;
 			}
 		}
-
-
-
 		//spawn
 		pM.SpawnParticles();
 		//detectar murs sphere
+		for (int i = 0; i < pM.particles.size(); i++) {
+			for (int j = 0; j < 6; j++) {
+				pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
+			}
+		}
 		//esfera
 		if (SphereCollider) {
 			renderSphere = true;
@@ -201,9 +207,6 @@ void PhysicsUpdate(float dt) {
 			Sphere::updateSphere(glm::vec3(SpherePos[0], SpherePos[1], SpherePos[2]), SphereRad);
 			for (int i = 0; i < pM.particles.size(); i++) {
 				pM.particles[i].DetectSphere(spherePosition, SphereRad, dt);
-				for (int j = 0; j < 6; j++) {
-					pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
-				}
 			}
 		}
 		else {
@@ -222,7 +225,6 @@ void PhysicsUpdate(float dt) {
 		//moure particules
 		pM.Update(dt);
 	}
-	//cout << renderSphere << endl;
 	if (Reset) {
 		for(int i = 0; i < pM.particles.size(); i++) {
 			pM.particles.clear(); //netejem l'array i com que el dels vertex nomes fem update tenint en compte el tamany d'aquest dons no tindrem problemes.
