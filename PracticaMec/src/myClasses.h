@@ -24,21 +24,24 @@ class Particle {
 	float elasticCoef;
 	float frictionCoef;	
 
+	float lifeCounter;
+
 	solverMethod sM;
 public:
-	
+	float particleLife;
 	Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC);
 	coords position;
 	void Move(float dt);
 	void DetectWall(coords n, int d, float dt);
 	void DetectSphere(coords pos, float radius, float dt);
+	bool Die();
 };
 
 
 class particleManager {
 
 	float spawnCounter;
-	float lifeCounter;
+	
 public:
 	int emitterRate;
 	coords pos1; //posicio del emissor

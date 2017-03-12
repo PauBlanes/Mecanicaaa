@@ -196,13 +196,13 @@ void PhysicsUpdate(float dt) {
 			}
 		}
 		
-		//detectar murs sphere
+		//colisio murs
 		for (int i = 0; i < pM.particles.size(); i++) {
 			for (int j = 0; j < 6; j++) {
 				pM.particles[i].DetectWall(pM.wallNormals[j], pM.wallDs[j], dt);
 			}
 		}
-		//esfera
+		//colisio esfera
 		if (SphereCollider) {
 			renderSphere = true;
 			spherePosition.x = SpherePos[0];	spherePosition.y = SpherePos[1];	spherePosition.z = SpherePos[2];
@@ -224,6 +224,7 @@ void PhysicsUpdate(float dt) {
 		else {
 			renderCapsule = false;
 		}
+
 		//moure particules
 		pM.Update(dt);
 	}
