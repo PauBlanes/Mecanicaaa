@@ -35,6 +35,7 @@ public:
 	void Move(float dt);
 	void DetectWall(coords n, int d, float dt);
 	void DetectSphere(coords pos, float radius, float dt);
+	void DetectCapsule(coords posA, coords posB, float radius, float dt);
 	bool Die();
 };
 
