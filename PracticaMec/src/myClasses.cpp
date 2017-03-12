@@ -147,7 +147,6 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 		if (dist < radius) {
 			//std::cout << "CollShpere" << std::endl;
 			coords n = { distVector.x / dist, distVector.y / dist, distVector.z / dist };
-			std::cout << distVector.x << "," << distVector.y << "," << distVector.z << std::endl;
 			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
 																				  //elasticidad
 			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
@@ -272,11 +271,10 @@ void particleManager::SpawnParticles(emiterType spawnType) {
 			}
 			else {
 				coords finalPos;
-				finalPos.x = pos1.x + (((float)rand()) / (float)RAND_MAX) * (pos2.x - pos1.x);
-				std::cout << pos1.x << "," << pos2.x << std::endl;
+				finalPos.x = pos1.x + (((float)rand()) / (float)RAND_MAX) * (pos2.x - pos1.x);				
 				finalPos.y = pos1.y + (((float)rand()) / (float)RAND_MAX) * (pos2.y - pos1.y);
 				finalPos.z = pos1.z + (((float)rand()) / (float)RAND_MAX) * (pos2.z - pos1.z);
-				std::cout << finalPos.x << "," << finalPos.y << "," << finalPos.z << std::endl;
+				
 
 				Particle temp(partsMethod, finalPos, dir, 1.0, elasticCoef, frictionCoef);
 				partVerts[(particles.size()) * 3 + 0] = temp.position.x;

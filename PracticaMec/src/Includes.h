@@ -1,5 +1,5 @@
 #pragma once
-#include <GL\glew.h>
+/*#include <GL\glew.h>
 #include <glm\gtc\type_ptr.hpp>
 #include <glm\gtc\matrix_transform.hpp>
 #include <GL\glew.h>
@@ -33,7 +33,7 @@ namespace Capsule {
 	extern void drawCapsule();
 }
 extern float *partVerts;
-
+*/
 
 
 

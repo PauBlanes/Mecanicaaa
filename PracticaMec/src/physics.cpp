@@ -75,7 +75,7 @@ void GUI() {
 				
 			}
 			
-
+			newVel.x = dir[0]; newVel.y = dir[1]; newVel.z = dir[2];
 			newPos.x = pos[0]; newPos.y = pos[1]; newPos.z = pos[2];
 			newPos2.x = pos2[0]; newPos2.y = pos2[1]; newPos2.z = pos2[2];
 		}
