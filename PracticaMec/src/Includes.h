@@ -33,7 +33,7 @@ namespace Capsule {
 	extern void drawCapsule();
 }
 extern float *partVerts;
-//void PhysicsInit();
+
 
 
 

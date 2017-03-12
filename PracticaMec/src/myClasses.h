@@ -19,7 +19,8 @@ class Particle {
 	coords velocity;
 
 	float mass;
-	float force;
+	coords force;
+	coords acc;
 
 	float elasticCoef;
 	float frictionCoef;	
@@ -29,7 +30,7 @@ class Particle {
 	solverMethod sM;
 public:
 	float particleLife;
-	Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC);
+	Particle(solverMethod solvM, coords pos, coords initAcc, float laMassa, float eC, float fC);
 	coords position;
 	void Move(float dt);
 	void DetectWall(coords n, int d, float dt);
