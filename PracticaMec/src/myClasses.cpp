@@ -3,18 +3,24 @@
 
 float gravity;
 int NumPrticles = 0;
-Particle::Particle(solverMethod solvM, coords pos, coords vel, float laMassa, float eC, float fC) {
+Particle::Particle(solverMethod solvM, coords pos, coords initAcc, float laMassa, float eC, float fC) {
 	sM = solvM;
 		
 	position.x = pos.x;		position.y = pos.y;		position.z = pos.z;
 	actualPos.x = pos.x;	actualPos.y = pos.y;	actualPos.z = pos.z;
 	oldPos.x = pos.x;		oldPos.y = pos.y;		oldPos.z = pos.z;
 
-	velocity = vel;
+	velocity = {0,0,0};
 	mass = laMassa;
 
 	//calculem la forca
-	force = mass*gravity;
+	acc.x = initAcc.x;
+	acc.y = gravity + initAcc.y;
+	acc.z = initAcc.z;
+
+	force.x = mass*acc.x;
+	force.y = mass*acc.y;
+	force.z = mass*acc.z;
 
 	elasticCoef = eC;
 	frictionCoef = fC;
@@ -29,8 +35,10 @@ void Particle::Move(float dt) {
 		position.y += dt*velocity.y;
 		position.z += dt*velocity.z;
 		
-		//tant en la x com z la velocitat es mant?igual pq l'acceleraci?només és la de la gravetat
-		velocity.y += dt*(force / mass);
+		//sumem acceleracions que ens dona l'emissor o en el cas d'un camp de força
+		velocity.x += dt*(force.x / mass);
+		velocity.y += dt*(force.y / mass);
+		velocity.z += dt*(force.z / mass);
 		
 		//anar actualitzant aixo per si canviem en mig de la simulacio que no surtin disparades
 		oldPos.x = actualPos.x;
@@ -42,9 +50,9 @@ void Particle::Move(float dt) {
 		
 	}
 	else {
-		position.x = actualPos.x + (actualPos.x - oldPos.x);
-		position.y = actualPos.y + (actualPos.y - oldPos.y) + (force / mass)*dt*dt;
-		position.z = actualPos.z + (actualPos.z - oldPos.z);
+		position.x = actualPos.x + (actualPos.x - oldPos.x) + (force.x / mass)*dt*dt;
+		position.y = actualPos.y + (actualPos.y - oldPos.y) + (force.y / mass)*dt*dt;
+		position.z = actualPos.z + (actualPos.z - oldPos.z) + (force.z / mass)*dt*dt;
 		oldPos.x = actualPos.x;
 		oldPos.y = actualPos.y;
 		oldPos.z = actualPos.z;
@@ -52,8 +60,10 @@ void Particle::Move(float dt) {
 		actualPos.y = position.y;
 		actualPos.z = position.z;
 	}
-	
-	force = mass*gravity;
+	//recalculem forces per si han canviat
+	force.x = mass*acc.x;
+	force.y = mass*acc.y;
+	force.z = mass*acc.z;
 }
 void Particle::DetectWall(coords n, int d, float dt) {
 	//calculem quina seria la seva seguent posicio
@@ -85,9 +95,9 @@ void Particle::DetectWall(coords n, int d, float dt) {
 	}
 	//colisio per verlet
 	else {
-		posCreuada.x = position.x + (position.x - oldPos.x);
-		posCreuada.y += position.y + (position.y - oldPos.y) + (force / mass)*dt*dt;
-		posCreuada.z += position.z + (position.z - oldPos.z);
+		posCreuada.x = position.x + (position.x - oldPos.x) + (force.x / mass)*dt*dt;
+		posCreuada.y += position.y + (position.y - oldPos.y) + (force.y / mass)*dt*dt;
+		posCreuada.z += position.z + (position.z - oldPos.z) + (force.z / mass)*dt*dt;
 
 		//el rebot
 		if ((n.x*position.x + n.y*position.y + n.z*position.z + d) * (n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z + d) <= 0) {
@@ -155,9 +165,9 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 		}
 	}
 	else {
-		posCreuada.x = position.x + (position.x - oldPos.x);
-		posCreuada.y += position.y + (position.y - oldPos.y) + (force / mass)*dt*dt;
-		posCreuada.z += position.z + (position.z - oldPos.z);
+		posCreuada.x = position.x + (position.x - oldPos.x) + (force.x / mass)*dt*dt;
+		posCreuada.y += position.y + (position.y - oldPos.y) + (force.y / mass)*dt*dt;
+		posCreuada.z += position.z + (position.z - oldPos.z) + (force.z / mass)*dt*dt;
 		coords distVector = { posCreuada.x - Pos.x, posCreuada.y - Pos.y, posCreuada.y - Pos.y };
 		float dist = sqrt((distVector.x*distVector.x) + (distVector.y*distVector.y) + (distVector.y*distVector.y));
 		if (dist < radius) {
@@ -228,7 +238,7 @@ void particleManager::Update(float dt) {
 
 		if (particles[i].Die()) {
 			particles.erase(particles.begin());
-			std::cout << "mort" << std::endl;
+			
 		}
 		
 
@@ -240,7 +250,7 @@ void particleManager::Update(float dt) {
 }
 void particleManager::SpawnParticles(emiterType spawnType) {
 	if (emitterRate > 0) {
-		spawnCounter += (1 / ImGui::GetIO().Framerate);
+		spawnCounter += (1 / ImGui::GetIO().Framerate); //ho hem fet aixi pq tingui en compte que els frames no sempre van igual
 		if (spawnCounter >= (1 / emitterRate)) {
 
 			if (spawnType == font) {

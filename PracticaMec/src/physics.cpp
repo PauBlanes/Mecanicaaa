@@ -69,8 +69,12 @@ void GUI() {
 			if (Fout_Casca == 1) { //nomes si és casdada mostrem la segona posicio i la direccio
 				ImGui::InputFloat3("position2", pos2);
 				ImGui::InputFloat3("direction", dir);
-			}				
-			ImGui::SliderAngle("angle", &angle);
+			}
+			else {
+				ImGui::SliderAngle("angle", &angle);
+				
+			}
+			
 
 			newPos.x = pos[0]; newPos.y = pos[1]; newPos.z = pos[2];
 			newPos2.x = pos2[0]; newPos2.y = pos2[1]; newPos2.z = pos2[2];
@@ -169,11 +173,7 @@ void PhysicsUpdate(float dt) {
 		//SPAWNS
 		//fount
 		if (Fout_Casca==0) {			
-			pM.SpawnParticles(font);
-			//newVel.y = dir[0] * tan(angle*Rad);
-			//cout << newVel.y << endl;
-			//newVel.x = dir[0]*cos(angle*Rad); newVel.y = dir[1] * sin(angle*Rad); newVel.z = dir[2] * cos(angle*Rad);
-			//pM.pos1.y = newVel.y*
+			pM.SpawnParticles(font);			
 		}
 		//cascada
 		else {
