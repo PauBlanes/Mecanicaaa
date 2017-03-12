@@ -21,7 +21,7 @@ static float angle = 0.0f;
 static float Rad = 2*3.1415926/360;
 static int EmissionRate=1; static int life=2;
 static int Euler_Verlet = 0;
-static float iela = 1.2, ifri = 0.1f;
+static float iela = 0.2, ifri = 0.1f;
 //font cascada
 static int Fout_Casca = 0;
 //gravetat
@@ -166,7 +166,7 @@ void PhysicsUpdate(float dt) {
 			
 			newVel.x = -5+rand() % 10;
 			newVel.z = -5+rand() % 10;
-			newVel.z = -5 + rand() % 10;
+			newVel.y = -5 + rand() % 10;
 			//newVel.y = dir[0] * tan(angle*Rad);
 			cout << newVel.y << endl;
 			//newVel.x = dir[0]*cos(angle*Rad); newVel.y = dir[1] * sin(angle*Rad); newVel.z = dir[2] * cos(angle*Rad);
