@@ -205,44 +205,32 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 }
 void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 	//calculem quina seria la seva seguent posicio
-	coords posCreuada = { 0,0,0 };
+	
 	// Explicit the line that passes through the Capsule axis. 
 //	r.x = posA.x + (posB.x - posA.x)* t.x;
 //	r.y = posA.y + (posB.y - posA.y)* t.y;
 //	r.z = posA.z + (posB.z - posA.z)* t.z;
 	// Compute the closest point Q in the line to the point P. If Q is deﬁned with the line equation, 
 	// we can clamp it to restrict it to the segment AB.
+	coords posCreuada = { 0,0,0 };
+	coords ABCentre = { (posB.x - posA.x) / 2,(posB.y - posA.y) / 2 ,(posB.z - posA.z) / 2 };
 	if (sM == euler) {
 		posCreuada.x = position.x + dt*velocity.x;
 		posCreuada.y = position.y + dt*velocity.y;
-		posCreuada.z = position.z + dt*velocity.z;
-		coords Q; coords clamp;
-		coords distVectorBA = { posB.x - posA.x,posB.y - posA.y,posB.z - posA.z };
-		coords distVectorPA = { posCreuada.x - posA.x,posCreuada.y - posA.y,posCreuada.z - posA.z };
-		float dist = sqrt((distVectorBA.x*distVectorBA.x) + (distVectorBA.y*distVectorBA.y) + (distVectorBA.z*distVectorBA.z));
-		//clamp
-		clamp.x = distVectorPA.x * distVectorBA.x / dist;
-		clamp.y = distVectorPA.y * distVectorBA.y / dist;
-		clamp.z = distVectorPA.z * distVectorBA.z / dist;
-//	if (clamp.x < 0) clamp.x = 0;	if (clamp.x > 1) clamp.x = 1; else clamp.x = distVectorPA.x * distVectorBA.x / dist;
-//		if (clamp.y < 0) clamp.y = 0;	if (clamp.y > 0) clamp.y = 1; else clamp.y = distVectorPA.y * distVectorBA.y / dist;
-//		if (clamp.z < 0) clamp.z = 0;	if (clamp.z > 0) clamp.z = 1; else clamp.z = distVectorPA.z * distVectorBA.z / dist;
-
-//		Q.x = posA.x + (distVectorPA.x*distVectorBA.x / dist*distVectorBA.x);
-//		Q.y = posA.y + (distVectorPA.y*distVectorBA.y / dist*distVectorBA.y);
-//		Q.z = posA.z + (distVectorPA.z*distVectorBA.z / dist*distVectorBA.z);
-
-		Q.x = posA.x + clamp.x*distVectorBA.x;
-		Q.y = posA.y + clamp.y*distVectorBA.y;
-		Q.z = posA.z + clamp.z*distVectorBA.z;
-
-		coords distVectorPQ = { Q.x-posCreuada.x,Q.y-posCreuada.y,Q.z-posCreuada.z};
-		float distPQ = sqrt((distVectorPQ.x*distVectorPQ.x) + (distVectorPQ.y*distVectorPQ.y) + (distVectorPQ.z*distVectorPQ.z));
+		posCreuada.z = position.z + dt*velocity.z;		
+		coords AP = { posCreuada.x - posA.x,posCreuada.y - posA.y,posCreuada.z - posA.z };
+		coords AB = { posB.x - posA.x,posB.y - posA.y,posB.z - posA.z };
+		float distAB = sqrt((AB.x*AB.x) + (AB.y*AB.y) + (AB.z*AB.z));
+		coords clamp = {(AP.x*AB.x/(distAB*distAB))*AB.x,(AP.y*AB.y / (distAB*distAB))*AB.y, (AP.z*AB.z / (distAB*distAB))*AB.z};
+		
+		coords Q = { posA.x + clamp.x,posA.y + clamp.y,posA.z + clamp.z };
+		coords PQ = {Q.x- posCreuada.x,Q.y - posCreuada.y, Q.z - posCreuada.z};
+		float distPQ = sqrt((PQ.x*PQ.x)+ (PQ.y*PQ.y)+ (PQ.z*PQ.z));
 		if (distPQ < radius) {
 			//std::cout << "CollShpere" << std::endl;
-			std::cout << "TRUE" << std::endl;
-/*			coords n = { distVectorPQ.x / dist, distVectorPQ.y / dist, distVectorPQ.z / dist };
-			std::cout << distVectorPQ.x << "," << distVectorPQ.y << "," << distVectorPQ.z << std::endl;
+		//	std::cout << "TRUE" << std::endl;
+			coords n = { PQ.x / distPQ, PQ.y / distPQ, PQ.z / distPQ };
+		//	std::cout << distVectorPQ.x << "," << distVectorPQ.y << "," << distVectorPQ.z << std::endl;
 			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
 																				  //elasticidad
 			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
@@ -256,7 +244,7 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 			velocity.x += -frictionCoef * (velocity.x - vN.x); //-u*vT
 			velocity.y += -frictionCoef * (velocity.y - vN.y);
 			velocity.z += -frictionCoef * (velocity.z - vN.z);
-*/
+
 		}
 	}
 /*
