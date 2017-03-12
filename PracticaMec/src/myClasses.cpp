@@ -224,19 +224,24 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 		clamp.x = distVectorPA.x * distVectorBA.x / dist;
 		clamp.y = distVectorPA.y * distVectorBA.y / dist;
 		clamp.z = distVectorPA.z * distVectorBA.z / dist;
-		if (clamp.x < 0) clamp.x = 0;	if (clamp.x > 1) clamp.x = 1; else clamp.x = distVectorPA.x * distVectorBA.x / dist;
-		if (clamp.y < 0) clamp.y = 0;	if (clamp.y > 0) clamp.y = 1; else clamp.y = distVectorPA.y * distVectorBA.y / dist;
-		if (clamp.z < 0) clamp.z = 0;	if (clamp.z > 0) clamp.z = 1; else clamp.z = distVectorPA.z * distVectorBA.z / dist;
+//	if (clamp.x < 0) clamp.x = 0;	if (clamp.x > 1) clamp.x = 1; else clamp.x = distVectorPA.x * distVectorBA.x / dist;
+//		if (clamp.y < 0) clamp.y = 0;	if (clamp.y > 0) clamp.y = 1; else clamp.y = distVectorPA.y * distVectorBA.y / dist;
+//		if (clamp.z < 0) clamp.z = 0;	if (clamp.z > 0) clamp.z = 1; else clamp.z = distVectorPA.z * distVectorBA.z / dist;
 
-		Q.x = posA.x + (distVectorPA.x*distVectorBA.x / dist*distVectorBA.x);
-		Q.y = posA.y + (distVectorPA.y*distVectorBA.y / dist*distVectorBA.y);
-		Q.z = posA.z + (distVectorPA.z*distVectorBA.z / dist*distVectorBA.z);
+//		Q.x = posA.x + (distVectorPA.x*distVectorBA.x / dist*distVectorBA.x);
+//		Q.y = posA.y + (distVectorPA.y*distVectorBA.y / dist*distVectorBA.y);
+//		Q.z = posA.z + (distVectorPA.z*distVectorBA.z / dist*distVectorBA.z);
+
+		Q.x = posA.x + clamp.x*distVectorBA.x;
+		Q.y = posA.y + clamp.y*distVectorBA.y;
+		Q.z = posA.z + clamp.z*distVectorBA.z;
 
 		coords distVectorPQ = { Q.x-posCreuada.x,Q.y-posCreuada.y,Q.z-posCreuada.z};
 		float distPQ = sqrt((distVectorPQ.x*distVectorPQ.x) + (distVectorPQ.y*distVectorPQ.y) + (distVectorPQ.z*distVectorPQ.z));
 		if (distPQ < radius) {
 			//std::cout << "CollShpere" << std::endl;
-			coords n = { distVectorPQ.x / dist, distVectorPQ.y / dist, distVectorPQ.z / dist };
+			std::cout << "TRUE" << std::endl;
+/*			coords n = { distVectorPQ.x / dist, distVectorPQ.y / dist, distVectorPQ.z / dist };
 			std::cout << distVectorPQ.x << "," << distVectorPQ.y << "," << distVectorPQ.z << std::endl;
 			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
 																				  //elasticidad
@@ -251,7 +256,7 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 			velocity.x += -frictionCoef * (velocity.x - vN.x); //-u*vT
 			velocity.y += -frictionCoef * (velocity.y - vN.y);
 			velocity.z += -frictionCoef * (velocity.z - vN.z);
-
+*/
 		}
 	}
 /*
@@ -456,9 +461,7 @@ void particleManager::SpawnParticles(emiterType spawnType) {
 				partVerts[(particles.size()) * 3 + 1] = temp.position.y;
 				partVerts[(particles.size()) * 3 + 2] = temp.position.z;
 				particles.push_back(temp);
-			}
-
-			
+			}		
 			spawnCounter = 0;
 		}
 	}
