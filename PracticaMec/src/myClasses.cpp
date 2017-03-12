@@ -101,7 +101,6 @@ void Particle::DetectWall(coords n, int d, float dt) {
 
 		//el rebot
 		if ((n.x*position.x + n.y*position.y + n.z*position.z + d) * (n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z + d) <= 0) {
-			
 
 			coords projectedPos;
 			projectedPos.x = position.x - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.x;
@@ -204,16 +203,7 @@ void Particle::DetectSphere(coords Pos, float radius, float dt) {
 	}
 }
 void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
-	//calculem quina seria la seva seguent posicio
-	
-	// Explicit the line that passes through the Capsule axis. 
-//	r.x = posA.x + (posB.x - posA.x)* t.x;
-//	r.y = posA.y + (posB.y - posA.y)* t.y;
-//	r.z = posA.z + (posB.z - posA.z)* t.z;
-	// Compute the closest point Q in the line to the point P. If Q is deﬁned with the line equation, 
-	// we can clamp it to restrict it to the segment AB.
 	coords posCreuada = { 0,0,0 };
-	coords ABCentre = { (posB.x - posA.x) / 2,(posB.y - posA.y) / 2 ,(posB.z - posA.z) / 2 };
 	if (sM == euler) {
 		posCreuada.x = position.x + dt*velocity.x;
 		posCreuada.y = position.y + dt*velocity.y;
@@ -224,56 +214,50 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 		coords clamp = {(AP.x*AB.x/(distAB*distAB))*AB.x,(AP.y*AB.y / (distAB*distAB))*AB.y, (AP.z*AB.z / (distAB*distAB))*AB.z};
 		
 		coords Q = { posA.x + clamp.x,posA.y + clamp.y,posA.z + clamp.z };
+		coords AQ = {Q.x-posA.x,Q.y-posA.y,Q.z - posA.z };
+		float distAQ = sqrt((AQ.x*AQ.x)+ (AQ.y*AQ.y) + (AQ.z*AQ.z) );
 		coords PQ = {Q.x- posCreuada.x,Q.y - posCreuada.y, Q.z - posCreuada.z};
 		float distPQ = sqrt((PQ.x*PQ.x)+ (PQ.y*PQ.y)+ (PQ.z*PQ.z));
 		if (distPQ < radius) {
-			//std::cout << "CollShpere" << std::endl;
-		//	std::cout << "TRUE" << std::endl;
-			coords n = { PQ.x / distPQ, PQ.y / distPQ, PQ.z / distPQ };
-		//	std::cout << distVectorPQ.x << "," << distVectorPQ.y << "," << distVectorPQ.z << std::endl;
-			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
-																				  //elasticidad
-			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
-			velocity.y += -(1 + elasticCoef)*(n.y*VperN);
-			velocity.z += -(1 + elasticCoef)*(n.z*VperN);
-			//friccion
-			coords vN;
-			vN.x = VperN*n.x;
-			vN.y = VperN*n.y;
-			vN.z = VperN*n.z;
-			velocity.x += -frictionCoef * (velocity.x - vN.x); //-u*vT
-			velocity.y += -frictionCoef * (velocity.y - vN.y);
-			velocity.z += -frictionCoef * (velocity.z - vN.z);
-
+			if (distAQ < distAB) {
+				coords n = { PQ.x / distPQ, PQ.y / distPQ, PQ.z / distPQ };
+				float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
+																					  //elasticidad
+				velocity.x += -(1 + elasticCoef)*(n.x*VperN);
+				velocity.y += -(1 + elasticCoef)*(n.y*VperN);
+				velocity.z += -(1 + elasticCoef)*(n.z*VperN);
+				//friccion
+				coords vN;
+				vN.x = VperN*n.x;
+				vN.y = VperN*n.y;
+				vN.z = VperN*n.z;
+				velocity.x += -frictionCoef * (velocity.x - vN.x); //-u*vT
+				velocity.y += -frictionCoef * (velocity.y - vN.y);
+				velocity.z += -frictionCoef * (velocity.z - vN.z);
+			}
+			else {
+				DetectSphere(posA,radius,dt);
+				DetectSphere(posB, radius, dt);
+			}
 		}
 	}
-/*
 	else {
 		posCreuada.x = position.x + (position.x - oldPos.x) + (force.x / mass)*dt*dt;
 		posCreuada.y += position.y + (position.y - oldPos.y) + (force.y / mass)*dt*dt;
 		posCreuada.z += position.z + (position.z - oldPos.z) + (force.z / mass)*dt*dt;
-		coords Q; coords clamp;
-		coords distVectorBA = { posB.x - posA.x,posB.y - posA.y,posB.z - posA.z };
-		coords distVectorPA = { posCreuada.x - posA.x,posCreuada.y - posA.y,posCreuada.z - posA.z };
-		float dist = sqrt((distVectorBA.x*distVectorBA.x) + (distVectorBA.y*distVectorBA.y) + (distVectorBA.z*distVectorBA.z));
-		//clamp
-		clamp.x = distVectorPA.x * distVectorBA.x / dist;
-		clamp.y = distVectorPA.y * distVectorBA.y / dist;
-		clamp.z = distVectorPA.z * distVectorBA.z / dist;
-		if (clamp.x < 0) clamp.x = 0;	if (clamp.x > 1) clamp.x = 1; else clamp.x = distVectorPA.x * distVectorBA.x / dist;
-		if (clamp.y < 0) clamp.y = 0;	if (clamp.y > 0) clamp.y = 1; else clamp.y = distVectorPA.y * distVectorBA.y / dist;
-		if (clamp.z < 0) clamp.z = 0;	if (clamp.z > 0) clamp.z = 1; else clamp.z = distVectorPA.z * distVectorBA.z / dist;
+	
+		coords AP = { posCreuada.x - posA.x,posCreuada.y - posA.y,posCreuada.z - posA.z };
+		coords AB = { posB.x - posA.x,posB.y - posA.y,posB.z - posA.z };
+		float distAB = sqrt((AB.x*AB.x) + (AB.y*AB.y) + (AB.z*AB.z));
+		coords clamp = { (AP.x*AB.x / (distAB*distAB))*AB.x,(AP.y*AB.y / (distAB*distAB))*AB.y, (AP.z*AB.z / (distAB*distAB))*AB.z };
 
-		Q.x = posA.x + (distVectorPA.x*distVectorBA.x / dist*distVectorBA.x);
-		Q.y = posA.y + (distVectorPA.y*distVectorBA.y / dist*distVectorBA.y);
-		Q.z = posA.z + (distVectorPA.z*distVectorBA.z / dist*distVectorBA.z);
-
-		coords distVectorPQ = { Q.x - posCreuada.x,Q.y - posCreuada.y,Q.z - posCreuada.z };
-		float distPQ = sqrt((distVectorPQ.x*distVectorPQ.x) + (distVectorPQ.y*distVectorPQ.y) + (distVectorPQ.z*distVectorPQ.z));
+		coords Q = { posA.x + clamp.x,posA.y + clamp.y,posA.z + clamp.z };
+		coords PQ = { Q.x - posCreuada.x,Q.y - posCreuada.y, Q.z - posCreuada.z };
+		float distPQ = sqrt((PQ.x*PQ.x) + (PQ.y*PQ.y) + (PQ.z*PQ.z));
 
 		if (distPQ < radius) {
-			coords n = { distVectorPQ.x / dist, distVectorPQ.y / dist, distVectorPQ.z / dist };
-			coords p = { Pos.x + n.x*radius, Pos.y + n.y*radius ,Pos.z + n.z*radius };
+			coords n = { PQ.x / distPQ, PQ.y / distPQ, PQ.z / distPQ };
+			coords p = { Q.x + n.x*radius, Q.y + n.y*radius ,Q.z + n.z*radius };
 			float d = -(p.x*n.x + p.y*n.y + p.z*n.z);
 
 			coords projectedPos;
@@ -302,76 +286,8 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 			position.z = projectedPos.z + (1 - elasticCoef)*dirVectorN.z + frictionCoef* (dirVector.z - dirVectorN.z);
 			actualPos = position;
 			oldPos = projectedPos;
-		}
-	}*/
-	//colisio per metode euler
-//	if (sM == euler) {
-//		posCreuada.x = position.x + dt*velocity.x;
-//		posCreuada.y = position.y + dt*velocity.y;
-//		posCreuada.z = position.z + dt*velocity.z;
-
-//		coords distVector = { posCreuada.x - Pos.x, posCreuada.y - Pos.y, posCreuada.z - Pos.z };
-//		float dist = sqrt((distVector.x*distVector.x) + (distVector.y*distVector.y) + (distVector.z*distVector.z));
-/*		if (dist < radius) {
-			//std::cout << "CollShpere" << std::endl;
-			coords n = { distVector.x / dist, distVector.y / dist, distVector.z / dist };
-			std::cout << distVector.x << "," << distVector.y << "," << distVector.z << std::endl;
-			float VperN = (n.x*velocity.x) + (n.y*velocity.y) + (n.z*velocity.z); // v*n
-																				  //elasticidad
-			velocity.x += -(1 + elasticCoef)*(n.x*VperN);
-			velocity.y += -(1 + elasticCoef)*(n.y*VperN);
-			velocity.z += -(1 + elasticCoef)*(n.z*VperN);
-			//friccion
-			coords vN;
-			vN.x = VperN*n.x;
-			vN.y = VperN*n.y;
-			vN.z = VperN*n.z;
-			velocity.x += -frictionCoef * (velocity.x - vN.x); //-u*vT
-			velocity.y += -frictionCoef * (velocity.y - vN.y);
-			velocity.z += -frictionCoef * (velocity.z - vN.z);
-
 		}
 	}
-	else {
-		posCreuada.x = position.x + (position.x - oldPos.x) + (force.x / mass)*dt*dt;
-		posCreuada.y += position.y + (position.y - oldPos.y) + (force.y / mass)*dt*dt;
-		posCreuada.z += position.z + (position.z - oldPos.z) + (force.z / mass)*dt*dt;
-		coords distVector = { posCreuada.x - Pos.x, posCreuada.y - Pos.y, posCreuada.y - Pos.y };
-		float dist = sqrt((distVector.x*distVector.x) + (distVector.y*distVector.y) + (distVector.y*distVector.y));
-		if (dist < radius) {
-			//std::cout << "CollShpere" << std::endl;
-			coords n = { distVector.x / dist, distVector.y / dist, distVector.z / dist };
-			coords p = { Pos.x + n.x*radius, Pos.y + n.y*radius ,Pos.z + n.z*radius };
-			float d = -(p.x*n.x + p.y*n.y + p.z*n.z);
-
-			coords projectedPos;
-			projectedPos.x = position.x - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.x;
-			projectedPos.y = position.y - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.y;
-			projectedPos.z = position.z - 2 * ((n.x*position.x + n.y*position.y + n.z*position.z) + d)*n.z;
-
-			coords projectedCreuada;
-			projectedCreuada.x = posCreuada.x - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.x;
-			projectedCreuada.y = posCreuada.y - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.y;
-			projectedCreuada.z = posCreuada.z - 2 * ((n.x*posCreuada.x + n.y*posCreuada.y + n.z*posCreuada.z) + d)*n.z;
-
-			coords dirVector;
-			dirVector.x = projectedCreuada.x - projectedPos.x;
-			dirVector.y = projectedCreuada.y - projectedPos.y;
-			dirVector.z = projectedCreuada.z - projectedPos.z;
-
-			coords dirVectorN;
-			dirVectorN.x = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.x;
-			dirVectorN.y = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.y;
-			dirVectorN.z = (dirVector.x*n.x + dirVector.y*n.y + dirVector.z*n.z)*n.z;
-
-			//la nova pos
-			position.x = projectedPos.x + (1 - elasticCoef)*dirVectorN.x + frictionCoef* (dirVector.x - dirVectorN.x);
-			position.y = projectedPos.y + (1 - elasticCoef)*dirVectorN.y + frictionCoef* (dirVector.y - dirVectorN.y);
-			position.z = projectedPos.z + (1 - elasticCoef)*dirVectorN.z + frictionCoef* (dirVector.z - dirVectorN.z);
-			actualPos = position;
-			oldPos = projectedPos;
-		}
-	}*/
 }
 bool Particle::Die() {
 	
