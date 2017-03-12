@@ -163,6 +163,7 @@ void PhysicsUpdate(float dt) {
 		pM.emitterRate = EmissionRate;
 		pM.pos1.x = newPos.x;	pM.pos1.y = newPos.y;	pM.pos1.z = newPos.z;		
 		pM.particleLife = life;
+		pM.fontAngle = angle;
 		if (Euler_Verlet == 0)
 			pM.partsMethod = euler;
 		else

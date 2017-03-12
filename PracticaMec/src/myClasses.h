@@ -6,6 +6,7 @@
 #include <iostream>
 #include "Includes.h"
 #include "imgui\imgui.h"
+#include <time.h>
 
 enum solverMethod { euler, verlet };
 struct coords { float x;float y;float z; };
@@ -53,6 +54,7 @@ public:
 	solverMethod partsMethod;
 	float elasticCoef;
 	float frictionCoef;
+	float fontAngle; //l'angle amb que surten les particules a la font
 
 	coords wallNormals[6];
 	int wallDs[6];

@@ -254,10 +254,16 @@ void particleManager::SpawnParticles(emiterType spawnType) {
 		if (spawnCounter >= (1 / emitterRate)) {
 
 			if (spawnType == font) {
-				dir.x = -5 + rand() % 10;
-				dir.z = -5 + rand() % 10;
-				dir.y = -5 + rand() % 10;
+				
+				dir.z = 5 * (fontAngle / std::abs(fontAngle)); //aixi angle positiu sortiran cap a un costat i negatiu cap a l'altre
 
+				float min = -(dir.z * tan(fontAngle * 3.141516 / 180.0))*100;
+				float max = (dir.z * tan(fontAngle * 3.141516 / 180.0))*100;
+				
+				
+				dir.x = min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+				dir.y = min + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (max - min)));
+				
 				Particle temp(partsMethod, pos1, dir, 1.0, elasticCoef, frictionCoef);
 				partVerts[(particles.size()) * 3 + 0] = temp.position.x;
 				partVerts[(particles.size()) * 3 + 1] = temp.position.y;
