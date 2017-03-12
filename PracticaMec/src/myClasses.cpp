@@ -219,7 +219,10 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 		coords PQ = {Q.x- posCreuada.x,Q.y - posCreuada.y, Q.z - posCreuada.z};
 		float distPQ = sqrt((PQ.x*PQ.x)+ (PQ.y*PQ.y)+ (PQ.z*PQ.z));
 		if (distPQ < radius) {
-			if (distAQ < distAB) {
+			bool distMinor = false;
+			if (distAQ < distAB)	distMinor = true;
+			else distMinor = false;
+			if (distMinor) {
 				coords U = PQ;	float Uquadrat = (U.x*U.x)+(U.y*U.y)+(U.z*U.z);
 				coords projuV;
 				projuV.x = velocity.x - ((velocity.x*U.x / Uquadrat)*U.x);
@@ -233,16 +236,16 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 
 				velocity.x = -projuV2.x + projuV.x;
 				velocity.y = -projuV2.y + projuV.y;
-				velocity.z = -projuV2.x + projuV.z;
-				
-				
+				velocity.z = -projuV2.x + projuV.z;	
 
 				float distVelocity=sqrt((velocity.x*velocity.x)+ (velocity.y*velocity.y) + (velocity.z*velocity.z));
 				coords n = {velocity.x/distVelocity,velocity.y / distVelocity, velocity.z / distVelocity};
 				float VperN = (n.x*velocity.x)+(n.y*velocity.y)+(n.z*velocity.z);
-				velocity.x += -(elasticCoef)*(velocity.x);
-				velocity.y += -(elasticCoef)*(velocity.y);
-				velocity.z += -(elasticCoef)*(velocity.z);
+				
+				velocity.x += (elasticCoef)*(velocity.x);
+				velocity.y += (elasticCoef)*(velocity.y);
+				velocity.z += (elasticCoef)*(velocity.z);
+
 				//friccion
 				coords vN;
 				vN.x = VperN*n.x;
@@ -269,10 +272,13 @@ void Particle::DetectCapsule(coords posA, coords posB, float radius, float dt) {
 		coords clamp = { (AP.x*AB.x / (distAB*distAB))*AB.x,(AP.y*AB.y / (distAB*distAB))*AB.y, (AP.z*AB.z / (distAB*distAB))*AB.z };
 
 		coords Q = { posA.x + clamp.x,posA.y + clamp.y,posA.z + clamp.z };
+		coords AQ = { Q.x - posA.x,Q.y - posA.y,Q.z - posA.z };
+		float distAQ = sqrt((AQ.x*AQ.x) + (AQ.y*AQ.y) + (AQ.z*AQ.z));
 		coords PQ = { Q.x - posCreuada.x,Q.y - posCreuada.y, Q.z - posCreuada.z };
 		float distPQ = sqrt((PQ.x*PQ.x) + (PQ.y*PQ.y) + (PQ.z*PQ.z));
 
 		if (distPQ < radius) {
+
 			coords n = { PQ.x / distPQ, PQ.y / distPQ, PQ.z / distPQ };
 			coords p = { Q.x + n.x*radius, Q.y + n.y*radius ,Q.z + n.z*radius };
 			float d = -(p.x*n.x + p.y*n.y + p.z*n.z);
