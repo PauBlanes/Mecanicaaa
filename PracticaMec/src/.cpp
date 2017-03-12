@@ -5,7 +5,6 @@
 #include "myClasses.h"
 #include <iostream>
 #include <vector>
-#include "Includes.h"
 
 //Boolean variables allow to show/hide the primitives
 extern bool renderSphere = true;

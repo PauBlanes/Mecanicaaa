@@ -137,7 +137,6 @@ xcopy "$(ProjectDir)libs\glfw3.dll" "$(OutDir)" /y /d</Command>
     <ClCompile Include="src\.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Includes.h" />
     <ClInclude Include="src\myClasses.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
